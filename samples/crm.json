@@ -1,0 +1,9 @@
+{
+  "client_demo_001": {
+    "client_id": "client_demo_001",
+    "risk_tolerance": "moderate",
+    "investment_horizon_years": 8,
+    "kyc_status": "verified",
+    "updated_at": "2026-08-15"
+  }
+}

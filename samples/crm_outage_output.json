@@ -1,0 +1,290 @@
+{
+  "schema_version": "1.0",
+  "run_id": "c31789e5-e194-4f83-9743-e90811b1ddb9",
+  "created_at": "2026-10-15T03:36:34.892355+00:00",
+  "client_id": "client_demo_001",
+  "as_of": "2026-10-01",
+  "currency": "USD",
+  "status": "pending_review",
+  "execution_status": "degraded",
+  "advisory_release_allowed": false,
+  "reasoning_mode": "deterministic_policy",
+  "summary": {
+    "finding_count": 8,
+    "high_severity_count": 4,
+    "action_count": 8
+  },
+  "metrics": {
+    "currency": "USD",
+    "total_assets": "212000.00",
+    "invested_assets": "200000.00",
+    "total_liabilities": "30000.00",
+    "net_worth": "182000.00",
+    "declared_monthly_surplus": "3000.00",
+    "cash_runway_months": "2.00",
+    "equity_share_of_investments": "0.90",
+    "transaction_count": 32,
+    "policy": {
+      "version": "2026-10-demo-v1",
+      "minimum_baseline": 8,
+      "absolute_outflow": "10000",
+      "minimum_spike": "500",
+      "spike_ratio": "4",
+      "robust_z": "6",
+      "spending_growth": "0.50",
+      "minimum_spending_increase": "500",
+      "emergency_months": "6",
+      "critical_cash_months": "3",
+      "single_asset_limit": "0.40",
+      "profile_max_age_days": 180,
+      "conservative_equity_limit": "0.40",
+      "moderate_equity_limit": "0.65",
+      "aggressive_equity_limit": "0.85",
+      "short_horizon_years": 3,
+      "short_horizon_equity_limit": "0.40",
+      "recent_days": 30,
+      "baseline_days": 90,
+      "net_worth_decline": "0.20"
+    },
+    "anomaly_coverage": {
+      "baseline_start": "2026-07-01",
+      "baseline_end": "2026-08-31",
+      "recent_start": "2026-09-01",
+      "recent_end": "2026-10-01",
+      "baseline_outflows": 20,
+      "recent_outflows": 7,
+      "eligible_categories": [
+        "groceries"
+      ]
+    },
+    "spending_comparison": {
+      "available": true,
+      "previous_month": "2026-08-01",
+      "latest_month": "2026-09-01",
+      "latest_end": "2026-09-30"
+    }
+  },
+  "findings": [
+    {
+      "id": "F-CRM_UNAVAILABLE",
+      "code": "CRM_UNAVAILABLE",
+      "severity": "high",
+      "title": "Client suitability context is unavailable",
+      "explanation": "Refresh the CRM profile before discussing portfolio changes.",
+      "evidence": {
+        "source": "crm"
+      }
+    },
+    {
+      "id": "F-LARGE_OUTFLOW-2e6c8b04aff4",
+      "code": "LARGE_OUTFLOW",
+      "severity": "high",
+      "title": "Large recent outflow",
+      "explanation": "The outflow exceeds the demo's absolute review threshold; confirm its purpose.",
+      "evidence": {
+        "transaction_id": "sep_wire",
+        "date": "2026-09-26",
+        "amount": "15000.00",
+        "category": "external_transfer",
+        "threshold": "10000"
+      }
+    },
+    {
+      "id": "F-LOW_LIQUIDITY",
+      "code": "LOW_LIQUIDITY",
+      "severity": "high",
+      "title": "Limited cash reserve",
+      "explanation": "Cash is below the illustrative emergency reserve target.",
+      "evidence": {
+        "cash_balance": "12000.00",
+        "monthly_expenses": "6000.00",
+        "coverage_months": "2.00",
+        "target_months": "6",
+        "target_gap": "24000.00"
+      }
+    },
+    {
+      "id": "F-SINGLE_ASSET_CONCENTRATION-9b5b44320d01",
+      "code": "SINGLE_ASSET_CONCENTRATION",
+      "severity": "high",
+      "title": "Investment concentration",
+      "explanation": "One recorded asset exceeds the illustrative concentration threshold.",
+      "evidence": {
+        "asset_id": "TECH_FUND",
+        "market_value": "140000.00",
+        "share_of_investments": "0.70",
+        "limit": "0.40"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-121db83be141",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "groceries",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "800.00",
+        "latest_amount": "2100.00",
+        "increase": "1300.00",
+        "growth_fraction": "1.62"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-6e3552347443",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "dining",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "400.00",
+        "latest_amount": "1200.00",
+        "increase": "800.00",
+        "growth_fraction": "2.00"
+      }
+    },
+    {
+      "id": "F-UNUSUAL_TRANSACTION-a1bf8659e27e",
+      "code": "UNUSUAL_TRANSACTION",
+      "severity": "medium",
+      "title": "Unusual transaction amount",
+      "explanation": "The outflow exceeds both its category's robust historical band and ratio guard.",
+      "evidence": {
+        "transaction_id": "sep_spike",
+        "date": "2026-09-22",
+        "amount": "1800.00",
+        "category": "groceries",
+        "baseline_count": 16,
+        "median": "100.00",
+        "median_absolute_deviation": "2.50",
+        "threshold": "500.00"
+      }
+    },
+    {
+      "id": "F-LIMITED_ANOMALY_BASELINE",
+      "code": "LIMITED_ANOMALY_BASELINE",
+      "severity": "info",
+      "title": "Statistical coverage is limited",
+      "explanation": "Some recent categories have fewer than 8 historical outflows, or no recent outflows exist. Absolute amount rules still apply; absence of a flag is inconclusive.",
+      "evidence": {
+        "eligible_categories": [
+          "groceries"
+        ],
+        "required_baseline_per_category": 8,
+        "recent_outflows": 7
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "A-CRM_UNAVAILABLE",
+      "finding_ids": [
+        "F-CRM_UNAVAILABLE"
+      ],
+      "priority": "high",
+      "instruction": "Restore CRM access and obtain current suitability and verification details.",
+      "requires_human_review": true
+    },
+    {
+      "id": "A-LARGE_OUTFLOW-2e6c8b04aff4",
+      "finding_ids": [
+        "F-LARGE_OUTFLOW-2e6c8b04aff4"
+      ],
+      "priority": "high",
+      "instruction": "Confirm the transaction's purpose and authorization with the client before drawing conclusions about unusual activity.",
+      "requires_human_review": true
+    },
+    {
+      "id": "A-LOW_LIQUIDITY",
+      "finding_ids": [
+        "F-LOW_LIQUIDITY"
+      ],
+      "priority": "high",
+      "instruction": "Confirm near-term cash needs and discuss a staged reserve plan with the client.",
+      "requires_human_review": true
+    },
+    {
+      "id": "A-SINGLE_ASSET_CONCENTRATION-9b5b44320d01",
+      "finding_ids": [
+        "F-SINGLE_ASSET_CONCENTRATION-9b5b44320d01"
+      ],
+      "priority": "high",
+      "instruction": "Verify recorded holdings and refresh CRM suitability information before discussing any portfolio change.",
+      "requires_human_review": true
+    },
+    {
+      "id": "A-SPENDING_GROWTH-121db83be141",
+      "finding_ids": [
+        "F-SPENDING_GROWTH-121db83be141"
+      ],
+      "priority": "medium",
+      "instruction": "Review the category increase with the client and distinguish recurring costs from one-off purchases.",
+      "requires_human_review": true
+    },
+    {
+      "id": "A-SPENDING_GROWTH-6e3552347443",
+      "finding_ids": [
+        "F-SPENDING_GROWTH-6e3552347443"
+      ],
+      "priority": "medium",
+      "instruction": "Review the category increase with the client and distinguish recurring costs from one-off purchases.",
+      "requires_human_review": true
+    },
+    {
+      "id": "A-UNUSUAL_TRANSACTION-a1bf8659e27e",
+      "finding_ids": [
+        "F-UNUSUAL_TRANSACTION-a1bf8659e27e"
+      ],
+      "priority": "medium",
+      "instruction": "Reconcile the transaction against supporting records and ask the client whether it reflects a planned expense.",
+      "requires_human_review": true
+    },
+    {
+      "id": "A-LIMITED_ANOMALY_BASELINE",
+      "finding_ids": [
+        "F-LIMITED_ANOMALY_BASELINE"
+      ],
+      "priority": "info",
+      "instruction": "Collect more categorized transaction history to improve coverage.",
+      "requires_human_review": true
+    }
+  ],
+  "reviewed_actions": [],
+  "guardrails": {
+    "human_review_required": true,
+    "portfolio_discussion_allowed": false
+  },
+  "sources": {
+    "financial_data": "provided_json",
+    "crm_available": false,
+    "crm_profile": null,
+    "history_run_ids": []
+  },
+  "warnings": [
+    "CRM context unavailable (crm_unavailable); suitability is blocked."
+  ],
+  "events": [
+    {
+      "agent": "data_fetcher",
+      "status": "completed",
+      "duration_ms": 151.23
+    },
+    {
+      "agent": "analyzer",
+      "status": "completed",
+      "duration_ms": 0.16
+    },
+    {
+      "agent": "advisor",
+      "status": "completed",
+      "duration_ms": 0.01
+    }
+  ],
+  "review": null,
+  "memory_persisted": true
+}
