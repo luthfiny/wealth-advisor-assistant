@@ -1,7 +1,7 @@
 {
   "schema_version": "1.1",
-  "run_id": "09a73662-9745-4326-badd-f7bcce1c39ad",
-  "created_at": "2026-10-15T04:58:41.596993+00:00",
+  "run_id": "6876e00a-032a-4cb3-94bd-ec05ae0b98a8",
+  "created_at": "2026-10-15T07:58:17.486755+00:00",
   "client_id": "client_demo_001",
   "as_of": "2026-10-01",
   "currency": "USD",
@@ -664,7 +664,7 @@
       "tool": "financial.prepare",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.59,
+      "duration_ms": 0.53,
       "error_code": null,
       "error_kind": null
     },
@@ -673,7 +673,7 @@
       "tool": "crm.profile",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.13,
+      "duration_ms": 0.11,
       "error_code": null,
       "error_kind": null
     },
@@ -682,7 +682,7 @@
       "tool": "memory.crm.save",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 80.66,
+      "duration_ms": 56.19,
       "error_code": null,
       "error_kind": null
     },
@@ -691,7 +691,7 @@
       "tool": "memory.history",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.34,
+      "duration_ms": 0.39,
       "error_code": null,
       "error_kind": null
     },
@@ -700,25 +700,7 @@
       "tool": "memory.feedback",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.23,
-      "error_code": null,
-      "error_kind": null
-    },
-    {
-      "agent": "analyzer",
-      "tool": "analytics.prepare",
-      "ok": true,
-      "attempts": 1,
-      "duration_ms": 0.11,
-      "error_code": null,
-      "error_kind": null
-    },
-    {
-      "agent": "analyzer",
-      "tool": "analytics.catalog",
-      "ok": true,
-      "attempts": 1,
-      "duration_ms": 0.02,
+      "duration_ms": 0.35,
       "error_code": null,
       "error_kind": null
     },
@@ -727,7 +709,7 @@
       "tool": "analytics.scan",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.18,
+      "duration_ms": 0.39,
       "error_code": null,
       "error_kind": null
     },
@@ -736,7 +718,7 @@
       "tool": "narrative.template",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.05,
+      "duration_ms": 0.06,
       "error_code": null,
       "error_kind": null
     }
@@ -891,7 +873,8 @@
   ],
   "guardrails": {
     "human_review_required": true,
-    "portfolio_discussion_allowed": true
+    "portfolio_discussion_allowed": true,
+    "portfolio_blockers": []
   },
   "sources": {
     "financial_data": "provided_json",
@@ -911,17 +894,17 @@
     {
       "agent": "data_fetcher",
       "status": "completed",
-      "duration_ms": 82.01
+      "duration_ms": 57.63
     },
     {
       "agent": "analyzer",
       "status": "completed",
-      "duration_ms": 0.46
+      "duration_ms": 0.49
     },
     {
       "agent": "advisor",
       "status": "completed",
-      "duration_ms": 0.25
+      "duration_ms": 0.34
     }
   ],
   "review": {
@@ -931,7 +914,7 @@
     "overrides": {
       "A-LARGE_OUTFLOW-2e6c8b04aff4": "Call the client to confirm withdrawal authorization and intended date."
     },
-    "created_at": "2026-10-15T04:58:41.689878+00:00",
+    "created_at": "2026-10-15T07:58:17.555829+00:00",
     "dismissals": {},
     "severity_overrides": {},
     "feedback_ttl_days": 90

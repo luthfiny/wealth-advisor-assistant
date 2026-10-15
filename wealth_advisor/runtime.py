@@ -12,9 +12,7 @@ from .memory import SQLiteMemory
 from .narrative import ClaudeNarrativeTool, TemplateNarrativeTool
 from .orchestrator import OrchestratorAgent
 from .tools import (
-    AnalysisPreparationTool,
     AnalyticsTool,
-    CatalogTool,
     FinancialDataTool,
     FixtureCRMTool,
     HistoryTool,
@@ -57,8 +55,6 @@ def build_system(
             "financial.prepare": InputPreparationTool(settings.ingestion_mode),
             "crm.profile": crm,
             "analytics.scan": AnalyticsTool(detectors, settings.analysis),
-            "analytics.catalog": CatalogTool(detectors),
-            "analytics.prepare": AnalysisPreparationTool(settings.analysis),
             "memory.history": HistoryTool(memory),
             "memory.feedback": MemoryTool(memory, "feedback"),
             "memory.crm.read": MemoryTool(memory, "cached_crm"),

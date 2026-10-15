@@ -1,10 +1,38 @@
 # Local validation
 
+## Review fixes validated on 15 October 2026
+
+All six findings from the code quality review have been addressed:
+
+| Finding | Implementation and regression coverage |
+| --- | --- |
+| Duplicated analysis planning | One `analytics.scan` request; registry coverage compared with the orchestrated report |
+| Duplicated portfolio guards | One decision reused by actions and output; a reused KYC dismissal cannot clear the original-evidence guard |
+| Duplicated HTTP transport | Shared bounded reader; real socket tests cover byte limits, redirects, slow responses and an overall deadline despite body progress |
+| Incorrect tool-provider contract | Separate `ToolProvider` and `ToolClient`; a scoped-only provider with call-only clients completes the workflow |
+| Statistical detector depended on the absolute rule | A 20,000 grocery spike remains flagged when the absolute check is disabled or fails; overlapping signals consolidate into one finding |
+| Malformed findings escaped detector isolation | Invalid fields/evidence and duplicate IDs fail only their detector; healthy findings remain reviewable |
+
+The updated code passed **127 tests** on WSL Python 3.12.3 with the optional MCP
+SDK installed, including 17 new regression tests and all six MCP tests. The
+initial 32-test focused run also passed on Python 3.11.15. All **23 CLI process
+scenarios**, **800 seeded corruption cases**, Ruff lint/format checks and
+`git diff --check` passed. Error logs in these runs include deliberate failures.
+
+The regenerated samples retain eight original-client findings, USD 182,000 net
+worth and a pending review gate. Tool traces now contain one analytics call, and
+`guardrails.portfolio_blockers` explains denied portfolio discussion. No external
+model calls or existing plugin review decisions were made. The earlier Windows,
+coverage and wheel results below describe the earlier implementation; those
+checks were not repeated for these fixes.
+
+## Earlier validation
+
 The subsequent native MCP plugin demonstration and its measured results are in
 [plugin-validation.md](plugin-validation.md). That run passed 110 tests with the
 optional SDK installed and exercised the plugin's tools directly in the existing chat.
 
-Validated on 15 October 2026 after the detector, tool-runtime, feedback, configuration, batch and narrative changes. The repository remains local. The GitHub Actions workflow has not run remotely.
+Validated locally on 15 October 2026 after the detector, tool-runtime, feedback, configuration, batch and narrative changes, before the first GitHub publication. This document records those local results; check the submission repository's Actions page for remote CI results.
 
 | Environment or check | Result |
 | --- | --- |
@@ -91,4 +119,4 @@ Targeted unit tests also validate:
 
 `scripts/generate_examples.py` rebuilds the original draft, reviewed, outage and historical examples using temporary SQLite stores. The outage example deliberately reuses a healthy earlier cache observation and labels that source. `scripts/generate_scenarios.py` creates three fictional clients and their lenient-mode reports: a balanced client with no findings, an activity case with 17 consolidated findings, and an import case with two dropped records and explicit data-quality issues.
 
-No live financial feed, authenticated enterprise CRM, paid model response, trade execution or remote CI run was validated. The optional provider adapter was tested against mocks, and its generated content is restricted to selecting locally verified sentence IDs. Cooperative tool budgets do not forcibly terminate arbitrary Python code or guarantee DNS cancellation. These limits are also documented in the README.
+No live financial feed, authenticated enterprise CRM, paid model response, trade execution or remote CI run was validated. The optional provider adapter was tested against mocks and, for the review fixes, a loopback HTTP endpoint. Its generated content is restricted to selecting locally verified sentence IDs. Cooperative tool budgets do not forcibly terminate arbitrary Python code or guarantee DNS cancellation. These limits are also documented in the README.

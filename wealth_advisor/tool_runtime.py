@@ -3,9 +3,9 @@
 import logging
 import threading
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Collection
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Any, Protocol, TypedDict, runtime_checkable
 
 from .domain import ValidationError
 from .observability import emit
@@ -39,6 +39,25 @@ class ToolClient(Protocol):
     def call(self, name: str, arguments: dict[str, Any], *, run_id: str) -> Any: ...
 
 
+class ToolMetadata(TypedDict):
+    tool: str
+    ok: bool
+    attempts: int
+    duration_ms: float
+    error_code: str | None
+    error_kind: str | None
+
+
+ToolObserver = Callable[[ToolMetadata], None]
+
+
+@runtime_checkable
+class ToolProvider(Protocol):
+    def scoped(
+        self, allowed: Collection[str], observer: ToolObserver | None = None
+    ) -> ToolClient: ...
+
+
 @dataclass(frozen=True)
 class ToolPolicy:
     max_attempts: int = 3
@@ -62,7 +81,7 @@ class ToolResult:
             raise self.error
         return self.value
 
-    def metadata(self):
+    def metadata(self) -> ToolMetadata:
         return {
             "tool": self.tool,
             "ok": self.ok,
@@ -133,7 +152,9 @@ class ToolRegistry:
             for n, t in sorted(self._tools.items())
         ]
 
-    def scoped(self, allowed, observer=None):
+    def scoped(
+        self, allowed: Collection[str], observer: ToolObserver | None = None
+    ) -> "ScopedToolClient":
         if not set(allowed) <= self._tools.keys():
             raise ToolError("unknown_tool", "Agent allowlist contains an unregistered tool")
         return ScopedToolClient(self, frozenset(allowed), observer)
@@ -230,7 +251,9 @@ class ToolRegistry:
 
 
 class ScopedToolClient:
-    def __init__(self, registry, allowed, observer=None):
+    def __init__(
+        self, registry: ToolRegistry, allowed: frozenset[str], observer: ToolObserver | None = None
+    ):
         self.registry, self.available, self.observer = registry, allowed, observer
 
     def call(self, name, arguments, *, run_id):

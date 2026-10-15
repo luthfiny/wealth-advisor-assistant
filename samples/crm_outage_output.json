@@ -1,7 +1,7 @@
 {
   "schema_version": "1.1",
-  "run_id": "6ad520bc-c2bf-40e4-a21b-fa159001e715",
-  "created_at": "2026-10-15T04:58:41.699040+00:00",
+  "run_id": "ccbbfe7b-8727-4272-8a20-561ffe4438c0",
+  "created_at": "2026-10-15T07:58:17.563420+00:00",
   "client_id": "client_demo_001",
   "as_of": "2026-10-01",
   "currency": "USD",
@@ -671,7 +671,7 @@
       "tool": "financial.prepare",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.43,
+      "duration_ms": 0.31,
       "error_code": null,
       "error_kind": null
     },
@@ -680,7 +680,7 @@
       "tool": "crm.profile",
       "ok": false,
       "attempts": 3,
-      "duration_ms": 150.59,
+      "duration_ms": 150.48,
       "error_code": "crm_unavailable",
       "error_kind": "transient"
     },
@@ -689,7 +689,7 @@
       "tool": "memory.crm.read",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.5,
+      "duration_ms": 0.46,
       "error_code": null,
       "error_kind": null
     },
@@ -698,7 +698,7 @@
       "tool": "memory.history",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.21,
+      "duration_ms": 0.19,
       "error_code": null,
       "error_kind": null
     },
@@ -707,25 +707,7 @@
       "tool": "memory.feedback",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.25,
-      "error_code": null,
-      "error_kind": null
-    },
-    {
-      "agent": "analyzer",
-      "tool": "analytics.prepare",
-      "ok": true,
-      "attempts": 1,
-      "duration_ms": 0.1,
-      "error_code": null,
-      "error_kind": null
-    },
-    {
-      "agent": "analyzer",
-      "tool": "analytics.catalog",
-      "ok": true,
-      "attempts": 1,
-      "duration_ms": 0.02,
+      "duration_ms": 0.26,
       "error_code": null,
       "error_kind": null
     },
@@ -734,7 +716,7 @@
       "tool": "analytics.scan",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.16,
+      "duration_ms": 0.3,
       "error_code": null,
       "error_kind": null
     },
@@ -743,7 +725,7 @@
       "tool": "narrative.template",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.04,
+      "duration_ms": 0.06,
       "error_code": null,
       "error_kind": null
     }
@@ -825,7 +807,10 @@
   "reviewed_actions": [],
   "guardrails": {
     "human_review_required": true,
-    "portfolio_discussion_allowed": false
+    "portfolio_discussion_allowed": false,
+    "portfolio_blockers": [
+      "crm_not_fresh"
+    ]
   },
   "sources": {
     "financial_data": "provided_json",
@@ -848,17 +833,17 @@
     {
       "agent": "data_fetcher",
       "status": "completed",
-      "duration_ms": 152.05
+      "duration_ms": 151.78
     },
     {
       "agent": "analyzer",
       "status": "completed",
-      "duration_ms": 0.4
+      "duration_ms": 0.39
     },
     {
       "agent": "advisor",
       "status": "completed",
-      "duration_ms": 0.29
+      "duration_ms": 0.23
     }
   ],
   "review": null,

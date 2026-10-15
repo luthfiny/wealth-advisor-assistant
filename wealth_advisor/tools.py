@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 import math
-import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlsplit
-from urllib.request import HTTPRedirectHandler, Request, build_opener
+from urllib.request import Request
 
-from .analysis import DetectorRegistry
+from .analysis import AnalysisResult, DetectorRegistry
 from .domain import ClientData, CRMProfile, ValidationError, loads
+from .http_transport import DeadlineExceeded, ResponseTooLarge, read_http_response
 from .memory import Memory, MemoryError
 from .metrics import AnalysisContext
 from .normalize import prepare_input
@@ -71,13 +71,6 @@ class FixtureCRMTool:
         return CRMProfile.parse(raw, arguments["client_id"], arguments["as_of"])
 
 
-class _NoRedirect(HTTPRedirectHandler):
-    def redirect_request(
-        self, req: Any, fp: Any, code: Any, msg: Any, headers: Any, newurl: Any
-    ) -> None:
-        return None
-
-
 class HttpCRMTool:
     """Small real HTTP adapter with timeout, bounded reads and explicit retry semantics."""
 
@@ -100,7 +93,7 @@ class HttpCRMTool:
             raise ValidationError("CRM timeout must be greater than zero and at most 30 seconds")
         self._url = base_url.rstrip("/")
         self._timeout = timeout
-        self._opener = build_opener(_NoRedirect())
+        self._opener = None
 
     def execute(self, arguments: dict[str, Any]) -> CRMProfile:
         request = Request(
@@ -108,30 +101,18 @@ class HttpCRMTool:
             headers={"Accept": "application/json"},
         )
         try:
-            deadline = arguments.get("_deadline", time.monotonic() + self._timeout)
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                raise ToolError("crm_timeout", "CRM deadline exhausted", retryable=True)
-            with self._opener.open(request, timeout=min(self._timeout, remaining)) as response:
-                chunks, size = [], 0
-                while size <= 65536:
-                    remaining = deadline - time.monotonic()
-                    if remaining <= 0:
-                        raise ToolError("crm_timeout", "CRM deadline exhausted", retryable=True)
-                    native_socket = getattr(
-                        getattr(getattr(response, "fp", None), "raw", None), "_sock", None
-                    )
-                    if native_socket is not None:
-                        native_socket.settimeout(min(self._timeout, remaining))
-                    chunk = response.read1(min(8192, 65537 - size))
-                    if not chunk:
-                        break
-                    chunks.append(chunk)
-                    size += len(chunk)
-                payload = b"".join(chunks)
-                if len(payload) > 65_536:
-                    raise ToolError("crm_invalid_response", "CRM response is too large")
-                raw = loads(payload)
+            raw = loads(
+                read_http_response(
+                    request,
+                    timeout=self._timeout,
+                    deadline=arguments.get("_deadline"),
+                    opener=self._opener,
+                )
+            )
+        except DeadlineExceeded as exc:
+            raise ToolError("crm_timeout", "CRM deadline exhausted", retryable=True) from exc
+        except ResponseTooLarge as exc:
+            raise ToolError("crm_invalid_response", "CRM response is too large") from exc
         except HTTPError as exc:
             transient = exc.code in {408, 429, 500, 502, 503, 504}
             exc.close()
@@ -146,34 +127,17 @@ class HttpCRMTool:
 
 
 class AnalyticsTool:
-    def __init__(self, registry=None, policy=None, selected=None):
+    def __init__(
+        self, registry: DetectorRegistry | None = None, policy: AnalysisPolicy | None = None
+    ):
         self.registry = registry or DetectorRegistry()
         self.policy = policy or AnalysisPolicy()
-        self.selected = selected
 
-    def execute(self, arguments: dict[str, Any]) -> Any:
-        context = arguments.get("context") or AnalysisContext(
+    def execute(self, arguments: dict[str, Any]) -> AnalysisResult:
+        context = AnalysisContext(
             arguments["data"], arguments["profile"], arguments["history"], self.policy
         )
-        return self.registry.run(context, arguments.get("selected", self.selected))
-
-
-@dataclass
-class CatalogTool:
-    registry: Any
-
-    def execute(self, arguments):
-        return self.registry.catalog()
-
-
-@dataclass
-class AnalysisPreparationTool:
-    policy: Any
-
-    def execute(self, arguments):
-        return AnalysisContext(
-            arguments["data"], arguments["profile"], arguments["history"], self.policy
-        )
+        return self.registry.run(context, arguments.get("selected"))
 
 
 @dataclass

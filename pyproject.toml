@@ -4,11 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wealth-advisor-assistant"
-version = "0.1.0"
+version = "0.2.0"
 description = "An auditable multi-agent wealth advisor simulation with local tools and human review"
 readme = "README.md"
 requires-python = ">=3.11"
-license = "MIT"
+license = "LicenseRef-PolyForm-Free-Trial-1.0.0"
+license-files = ["LICENSE", "COPYRIGHT"]
 dependencies = []
 
 [project.optional-dependencies]

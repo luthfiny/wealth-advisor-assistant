@@ -1,9 +1,9 @@
 {
   "name": "wealth-advisor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Run the local wealth advisor agents, inspect evidence and record human reviews on synthetic financial data.",
   "author": {"name": "Luthfi Naufan Yamin"},
-  "license": "MIT",
+  "license": "LicenseRef-PolyForm-Free-Trial-1.0.0",
   "mcpServers": "./.mcp.json",
   "requires_local_executor": true,
   "interface": {

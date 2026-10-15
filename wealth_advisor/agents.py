@@ -8,6 +8,7 @@ from typing import Protocol
 from .config import Settings
 from .domain import Action, Session
 from .feedback import apply_feedback, fingerprint
+from .guards import evaluate_portfolio_guard
 from .observability import emit
 from .priority import RANK
 from .tools import ToolClient, ToolError
@@ -146,43 +147,21 @@ class AnalyzerAgent:
     name = "analyzer"
     requires = frozenset({"prepared_data"})
     provides = frozenset({"analysis"})
-    allowed_tools = frozenset({"analytics.prepare", "analytics.catalog", "analytics.scan"})
+    allowed_tools = frozenset({"analytics.scan"})
 
     def __init__(self, settings=None):
         self.settings = settings or Settings()
 
     def run(self, session: Session, tools: ToolClient) -> None:
-        context = tools.call(
-            "analytics.prepare",
+        result = tools.call(
+            "analytics.scan",
             {
                 "data": session.require_data(),
                 "profile": session.profile,
                 "history": session.history,
+                "selected": self.settings.enabled_checks,
             },
             run_id=session.run_id,
-        )
-        catalog = tools.call("analytics.catalog", {}, run_id=session.run_id)
-        selected = []
-        for check in catalog:
-            if (
-                self.settings.enabled_checks is not None
-                and check["name"] not in self.settings.enabled_checks
-            ):
-                session.skipped_checks.append(
-                    {"check": check["name"], "reason": "disabled_by_configuration"}
-                )
-            elif set(check["needs"]) - context.available:
-                session.skipped_checks.append(
-                    {
-                        "check": check["name"],
-                        "reason": "missing_inputs: "
-                        + ", ".join(sorted(set(check["needs"]) - context.available)),
-                    }
-                )
-            else:
-                selected.append(check["name"])
-        result = tools.call(
-            "analytics.scan", {"context": context, "selected": selected}, run_id=session.run_id
         )
         session.metrics = result.metrics
         session.raw_findings, session.detector_signals = result.findings, result.raw_findings
@@ -190,6 +169,7 @@ class AnalyzerAgent:
             result.executed_checks,
             result.failed_checks,
         )
+        session.skipped_checks = result.skipped_checks
         session.findings, session.suppressed_findings, session.feedback_events = apply_feedback(
             result.findings,
             session.feedback,
@@ -271,15 +251,8 @@ class AdvisorAgent:
         self.settings = settings or Settings()
 
     def run(self, session: Session, tools: ToolClient) -> None:
-        blockers = {"CRM_UNAVAILABLE", "STALE_PROFILE", "KYC_REVIEW"}
-        suitability_blocked = (
-            session.profile_source != "fresh"
-            or bool(session.failed_checks)
-            or bool(session.data_quality.get("issues"))
-            or any(f.code in blockers for f in session.raw_findings)
-            or not {"crm_context", "suitability", "concentration", "liquidity"}
-            <= set(session.executed_checks)
-        )
+        session.portfolio_guard = evaluate_portfolio_guard(session)
+        suitability_blocked = not session.portfolio_guard.allowed
         for finding in session.findings:
             instruction = _ACTIONS.get(
                 finding.code,
@@ -329,5 +302,6 @@ class AdvisorAgent:
             agent=self.name,
             action_count=len(session.actions),
             suitability_blocked=suitability_blocked,
+            portfolio_blockers=session.portfolio_guard.reasons,
             decision="request_human_review",
         )

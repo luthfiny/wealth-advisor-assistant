@@ -1,8 +1,8 @@
 {
   "balanced": {
     "schema_version": "1.1",
-    "run_id": "d6eb4847-394f-4cfe-b9c5-6992fab34af8",
-    "created_at": "2026-10-15T04:58:42.050538+00:00",
+    "run_id": "7a3ca9f0-c324-456f-bcf2-b31a7315693a",
+    "created_at": "2026-10-15T07:58:17.879217+00:00",
     "client_id": "balanced_demo",
     "as_of": "2026-10-01",
     "currency": "USD",
@@ -227,7 +227,7 @@
         "tool": "financial.prepare",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 2.5,
+        "duration_ms": 2.01,
         "error_code": null,
         "error_kind": null
       },
@@ -236,7 +236,7 @@
         "tool": "crm.profile",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.2,
+        "duration_ms": 0.31,
         "error_code": null,
         "error_kind": null
       },
@@ -245,7 +245,7 @@
         "tool": "memory.crm.save",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 66.5,
+        "duration_ms": 69.19,
         "error_code": null,
         "error_kind": null
       },
@@ -254,7 +254,7 @@
         "tool": "memory.history",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.42,
+        "duration_ms": 0.33,
         "error_code": null,
         "error_kind": null
       },
@@ -263,25 +263,7 @@
         "tool": "memory.feedback",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.28,
-        "error_code": null,
-        "error_kind": null
-      },
-      {
-        "agent": "analyzer",
-        "tool": "analytics.prepare",
-        "ok": true,
-        "attempts": 1,
-        "duration_ms": 0.13,
-        "error_code": null,
-        "error_kind": null
-      },
-      {
-        "agent": "analyzer",
-        "tool": "analytics.catalog",
-        "ok": true,
-        "attempts": 1,
-        "duration_ms": 0.02,
+        "duration_ms": 0.22,
         "error_code": null,
         "error_kind": null
       },
@@ -290,7 +272,7 @@
         "tool": "analytics.scan",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.16,
+        "duration_ms": 0.28,
         "error_code": null,
         "error_kind": null
       },
@@ -299,7 +281,7 @@
         "tool": "narrative.template",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.03,
+        "duration_ms": 0.04,
         "error_code": null,
         "error_kind": null
       }
@@ -308,7 +290,8 @@
     "reviewed_actions": [],
     "guardrails": {
       "human_review_required": true,
-      "portfolio_discussion_allowed": true
+      "portfolio_discussion_allowed": true,
+      "portfolio_blockers": []
     },
     "sources": {
       "financial_data": "provided_json",
@@ -328,17 +311,17 @@
       {
         "agent": "data_fetcher",
         "status": "completed",
-        "duration_ms": 69.95
+        "duration_ms": 72.13
       },
       {
         "agent": "analyzer",
         "status": "completed",
-        "duration_ms": 0.51
+        "duration_ms": 0.38
       },
       {
         "agent": "advisor",
         "status": "completed",
-        "duration_ms": 0.04
+        "duration_ms": 0.1
       }
     ],
     "review": null,
@@ -346,8 +329,8 @@
   },
   "activity": {
     "schema_version": "1.1",
-    "run_id": "eb40032c-23f9-44a3-93b7-1ee589ee0372",
-    "created_at": "2026-10-15T04:58:42.130479+00:00",
+    "run_id": "e2a691bc-318a-409f-8bdb-c107409e43c8",
+    "created_at": "2026-10-15T07:58:17.960025+00:00",
     "client_id": "activity_demo",
     "as_of": "2026-10-01",
     "currency": "USD",
@@ -2067,7 +2050,7 @@
         "tool": "financial.prepare",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 2.85,
+        "duration_ms": 2.01,
         "error_code": null,
         "error_kind": null
       },
@@ -2076,7 +2059,7 @@
         "tool": "crm.profile",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.21,
+        "duration_ms": 0.1,
         "error_code": null,
         "error_kind": null
       },
@@ -2085,7 +2068,7 @@
         "tool": "memory.crm.save",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 9.06,
+        "duration_ms": 6.79,
         "error_code": null,
         "error_kind": null
       },
@@ -2094,7 +2077,7 @@
         "tool": "memory.history",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.36,
+        "duration_ms": 0.46,
         "error_code": null,
         "error_kind": null
       },
@@ -2103,25 +2086,7 @@
         "tool": "memory.feedback",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.23,
-        "error_code": null,
-        "error_kind": null
-      },
-      {
-        "agent": "analyzer",
-        "tool": "analytics.prepare",
-        "ok": true,
-        "attempts": 1,
-        "duration_ms": 0.09,
-        "error_code": null,
-        "error_kind": null
-      },
-      {
-        "agent": "analyzer",
-        "tool": "analytics.catalog",
-        "ok": true,
-        "attempts": 1,
-        "duration_ms": 0.02,
+        "duration_ms": 0.35,
         "error_code": null,
         "error_kind": null
       },
@@ -2130,7 +2095,7 @@
         "tool": "analytics.scan",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.32,
+        "duration_ms": 1.0,
         "error_code": null,
         "error_kind": null
       },
@@ -2139,7 +2104,7 @@
         "tool": "narrative.template",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.07,
+        "duration_ms": 0.06,
         "error_code": null,
         "error_kind": null
       }
@@ -2302,7 +2267,8 @@
     "reviewed_actions": [],
     "guardrails": {
       "human_review_required": true,
-      "portfolio_discussion_allowed": true
+      "portfolio_discussion_allowed": true,
+      "portfolio_blockers": []
     },
     "sources": {
       "financial_data": "provided_json",
@@ -2322,17 +2288,17 @@
       {
         "agent": "data_fetcher",
         "status": "completed",
-        "duration_ms": 12.75
+        "duration_ms": 9.77
       },
       {
         "agent": "analyzer",
         "status": "completed",
-        "duration_ms": 0.56
+        "duration_ms": 1.11
       },
       {
         "agent": "advisor",
         "status": "completed",
-        "duration_ms": 0.78
+        "duration_ms": 0.65
       }
     ],
     "review": null,
@@ -2340,8 +2306,8 @@
   },
   "import_repairs": {
     "schema_version": "1.1",
-    "run_id": "b7a79af3-f165-41d3-86be-267e4514e6a4",
-    "created_at": "2026-10-15T04:58:42.155463+00:00",
+    "run_id": "42f3269f-9a5f-4d64-b0b1-2c03c8a380dc",
+    "created_at": "2026-10-15T07:58:17.983628+00:00",
     "client_id": "import_demo",
     "as_of": "2026-10-01",
     "currency": "USD",
@@ -2613,7 +2579,7 @@
         "tool": "crm.profile",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.14,
+        "duration_ms": 0.1,
         "error_code": null,
         "error_kind": null
       },
@@ -2622,7 +2588,7 @@
         "tool": "memory.crm.save",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 7.42,
+        "duration_ms": 8.71,
         "error_code": null,
         "error_kind": null
       },
@@ -2631,7 +2597,7 @@
         "tool": "memory.history",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.32,
+        "duration_ms": 0.34,
         "error_code": null,
         "error_kind": null
       },
@@ -2640,25 +2606,7 @@
         "tool": "memory.feedback",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.22,
-        "error_code": null,
-        "error_kind": null
-      },
-      {
-        "agent": "analyzer",
-        "tool": "analytics.prepare",
-        "ok": true,
-        "attempts": 1,
-        "duration_ms": 0.09,
-        "error_code": null,
-        "error_kind": null
-      },
-      {
-        "agent": "analyzer",
-        "tool": "analytics.catalog",
-        "ok": true,
-        "attempts": 1,
-        "duration_ms": 0.02,
+        "duration_ms": 0.19,
         "error_code": null,
         "error_kind": null
       },
@@ -2667,7 +2615,7 @@
         "tool": "analytics.scan",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.14,
+        "duration_ms": 0.26,
         "error_code": null,
         "error_kind": null
       },
@@ -2676,7 +2624,7 @@
         "tool": "narrative.template",
         "ok": true,
         "attempts": 1,
-        "duration_ms": 0.02,
+        "duration_ms": 0.03,
         "error_code": null,
         "error_kind": null
       }
@@ -2685,7 +2633,10 @@
     "reviewed_actions": [],
     "guardrails": {
       "human_review_required": true,
-      "portfolio_discussion_allowed": false
+      "portfolio_discussion_allowed": false,
+      "portfolio_blockers": [
+        "input_repairs"
+      ]
     },
     "sources": {
       "financial_data": "provided_json",
@@ -2707,17 +2658,17 @@
       {
         "agent": "data_fetcher",
         "status": "completed",
-        "duration_ms": 9.89
+        "duration_ms": 11.13
       },
       {
         "agent": "analyzer",
         "status": "completed",
-        "duration_ms": 0.37
+        "duration_ms": 0.36
       },
       {
         "agent": "advisor",
         "status": "completed",
-        "duration_ms": 0.04
+        "duration_ms": 0.05
       }
     ],
     "review": null,

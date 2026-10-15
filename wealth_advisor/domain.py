@@ -7,7 +7,10 @@ import re
 from dataclasses import asdict, dataclass, field, is_dataclass
 from datetime import UTC, date, datetime
 from decimal import Decimal, InvalidOperation
+from math import isfinite
 from typing import Any
+
+from .priority import RANK
 
 
 class ValidationError(ValueError):
@@ -287,6 +290,46 @@ class Finding:
     explanation: str
     evidence: dict[str, Any]
 
+    def validate(self) -> None:
+        """Validate a detector's output before it enters shared analysis results."""
+        identifier(self.id, "finding.id")
+        if not self.id.startswith("F-"):
+            raise ValidationError("finding.id must start with F-")
+        identifier(self.code, "finding.code")
+        if not isinstance(self.severity, str) or self.severity not in RANK:
+            raise ValidationError("finding.severity is invalid")
+        text_value(self.title, "finding.title", limit=300)
+        text_value(self.explanation, "finding.explanation", limit=2000)
+        object_value(self.evidence, "finding.evidence")
+        if self.evidence.get("transaction_id") is not None:
+            identifier(self.evidence["transaction_id"], "finding.evidence.transaction_id")
+        _validate_evidence(self.evidence)
+
+
+def _validate_evidence(value: Any) -> None:
+    if isinstance(value, dict):
+        if any(not isinstance(key, str) for key in value):
+            raise ValidationError("Evidence object keys must be strings")
+        for item in value.values():
+            _validate_evidence(item)
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            _validate_evidence(item)
+    elif isinstance(value, Decimal):
+        if not value.is_finite():
+            raise ValidationError("Evidence numbers must be finite")
+    elif isinstance(value, float):
+        if not isfinite(value):
+            raise ValidationError("Evidence numbers must be finite")
+    elif value is not None and not isinstance(value, (str, bool, int, date)):
+        raise ValidationError("Evidence contains an unsupported value")
+
+
+@dataclass(frozen=True)
+class PortfolioGuard:
+    allowed: bool = False
+    reasons: tuple[str, ...] = ("analysis_incomplete",)
+
 
 @dataclass(frozen=True)
 class Action:
@@ -325,6 +368,7 @@ class Session:
     profile_source: str = "unavailable"
     recurring_ids: list[str] = field(default_factory=list)
     detector_signals: list[Finding] = field(default_factory=list)
+    portfolio_guard: PortfolioGuard = field(default_factory=PortfolioGuard)
 
     def require_data(self) -> ClientData:
         if self.data is None:

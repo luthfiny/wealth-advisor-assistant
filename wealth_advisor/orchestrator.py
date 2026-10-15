@@ -16,13 +16,15 @@ from .feedback import fingerprint
 from .memory import Memory, MemoryError
 from .observability import emit
 from .priority import review_priority
-from .tools import ToolClient, ToolError
+from .tool_runtime import ToolError, ToolProvider
 
 
 class OrchestratorAgent:
     def __init__(
-        self, tools: ToolClient, memory: Memory, agents: list[Agent] | None = None, settings=None
+        self, tools: ToolProvider, memory: Memory, agents: list[Agent] | None = None, settings=None
     ):
+        if not isinstance(tools, ToolProvider):
+            raise TypeError("Orchestrator tools must provide scoped agent clients")
         self.tools = tools
         self.memory = memory
         self.settings = settings or Settings()
@@ -144,15 +146,8 @@ class OrchestratorAgent:
             "reviewed_actions": [],
             "guardrails": {
                 "human_review_required": True,
-                "portfolio_discussion_allowed": session.profile_source == "fresh"
-                and not session.failed_checks
-                and not session.data_quality.get("issues")
-                and {"crm_context", "suitability", "concentration", "liquidity"}
-                <= set(session.executed_checks)
-                and not any(
-                    f.code in {"CRM_UNAVAILABLE", "STALE_PROFILE", "KYC_REVIEW"}
-                    for f in session.raw_findings
-                ),
+                "portfolio_discussion_allowed": session.portfolio_guard.allowed,
+                "portfolio_blockers": list(session.portfolio_guard.reasons),
             },
             "sources": {
                 "financial_data": "provided_json",

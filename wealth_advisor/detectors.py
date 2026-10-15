@@ -332,8 +332,6 @@ def statistical_outflows(c: AnalysisContext) -> list[Finding]:
             "amount": tx.amount,
             "category": tx.category,
         }
-        if tx.amount >= policy.absolute_outflow:
-            continue
         reference = by_category[tx.category]
         if len(reference) < policy.minimum_baseline:
             continue

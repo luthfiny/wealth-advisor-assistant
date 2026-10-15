@@ -19,6 +19,7 @@ def package(output: Path, wsl: str | None = None):
     target.mkdir(parents=True, exist_ok=True)
     shutil.copytree(ROOT / "plugins/wealth-advisor", target, dirs_exist_ok=True)
     shutil.copy2(ROOT / "LICENSE", target / "LICENSE")
+    shutil.copy2(ROOT / "COPYRIGHT", target / "COPYRIGHT")
     runtime = ROOT / ".venv-mcp/bin/python"
     arguments = [
         str(runtime),

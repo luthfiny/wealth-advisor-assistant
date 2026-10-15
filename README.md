@@ -6,6 +6,20 @@ Python 3.11+ is sufficient. The default uses **no runtime dependencies, credenti
 
 This is an assignment demonstration using synthetic data and illustrative thresholds. The system does not execute transactions or provide autonomous investment decisions.
 
+## License and evaluation
+
+Version 0.2.0 is provided under the standard, unmodified
+[PolyForm Free Trial License 1.0.0](LICENSE). It permits evaluation on behalf of
+an individual or company for **less than 32 consecutive calendar days**, including
+changes for that evaluation. It does not grant permission to redistribute the
+software or a general license for ongoing production or business use.
+
+For a longer evaluation or use outside that grant, obtain separate written
+permission from [Luthfi Naufan Yamin](https://github.com/luthfiny). This is
+source-available assessment software, not an open-source release. See
+[COPYRIGHT](COPYRIGHT) and [licensing details](docs/licensing.md). Earlier MIT
+releases retain their original licensing.
+
 ## Run
 
 From the repository root:
@@ -66,14 +80,21 @@ flowchart TD
 | --- | --- |
 | `OrchestratorAgent` | Schedules agents by declared dependencies; records routing, completion and failure; persists the draft |
 | `DataFetcherAgent` | Validates input, retrieves CRM context and historical memory, and records import quality and source provenance |
-| `AnalyzerAgent` | Selects checks from available inputs, runs them through the analytics tool, consolidates signals and applies eligible reviewer feedback |
+| `AnalyzerAgent` | Makes one analytics request and applies eligible reviewer feedback; the detector registry owns selection, coverage and signal consolidation |
 | `AdvisorAgent` | Maps findings to investigation actions, enforces portfolio discussion guards and requests a cited narrative |
-| `Tool` / `ToolClient` | Separate agent requests from concrete file, HTTP, analytics and storage implementations |
+| `Tool` / `ToolClient` / `ToolProvider` | Separate tool implementations, narrow agent calls and the orchestrator's ability to create scoped clients |
 | `ToolRegistry` | Enforces per-agent allowlists; returns structured results with attempts, duration and error kind; applies retries, deadlines and circuit breakers |
 | `Session` | Short-term memory for one execution, including prepared data, signals, decisions and tool metadata |
 | `SQLiteMemory` | Stores immutable drafts, final review decisions, earlier summaries, feedback and dated CRM snapshots |
 
 The composition root is `wealth_advisor/runtime.py`. Agents do not make raw filesystem, HTTP or SQL calls. Tools remain replaceable, and a new detector needs a catalog entry rather than changes to the orchestration flow. A detector exception records a sanitized failure and lets the other checks finish. An invalid financial snapshot fails the run with no advisory actions.
+
+The registry validates finding fields, evidence and unique IDs before publishing a
+detector's results. Invalid output fails only that check. Statistical and absolute
+outflow checks run independently; overlapping signals are consolidated afterward.
+The advisor computes one portfolio guard with explicit blocker reasons, which both
+action wording and the report use. Reviewer feedback cannot clear guards based on
+original evidence.
 
 These are deterministic task agents with explicit capabilities and dependency contracts. A small fixed workflow does not require an orchestration framework. Keeping financial calculations and action selection deterministic makes the result inspectable and runnable offline. The optional model has a deliberately narrow role.
 
@@ -188,6 +209,10 @@ The adapter calls `GET /clients/{client_id}` and validates client identity and p
 
 Transient failures retry with bounded exponential backoff. Invalid data and not-found responses do not retry. HTTP responses are capped at 64 KiB, redirects are blocked, and the adapter uses native socket timeouts with a shared monotonic call budget. A backend circuit opens after four consecutive failed calls by default, then permits one recovery probe after cooldown. Circuits are process-local; batch runs demonstrate reuse across clients. A bounded semaphore limits concurrent tool executions without spawning abandoned timeout threads.
 
+CRM and the optional Claude adapter share the bounded HTTP response reader in
+`wealth_advisor/http_transport.py`. Each adapter owns its request schema and error
+mapping; byte limits, redirect policy and read budgets have one implementation.
+
 Deadlines are cooperative. Native HTTP reads use the remaining budget; synchronous local Python functions are checked after returning and cannot be forcibly preempted. DNS resolution and OS scheduling can exceed a nominal socket budget. A hard process-isolation timeout would require a different execution model.
 
 Healthy CRM responses create dated cache snapshots. An outage may use a same-client snapshot only if its observation is no later than the analysis date, within the cache age limit, and its profile is still within the policy's freshness bound. A not-found response never falls back to cache. Cache use is explicit and always keeps portfolio discussion blocked. History/feedback/storage failures produce warnings and conservative fallbacks; an unsaved draft cannot be reviewed.
@@ -222,6 +247,6 @@ python3 scripts/generate_scenarios.py
 
 The unit suite checks financial boundaries, independent detector failures, permission enforcement, circuit recovery, concurrent reviews, dated cache behavior, feedback expiry, import repairs and constrained narrative selection. The process runner exercises fresh CLI processes and real loopback HTTP CRM servers. The seeded fuzz run alternates strict and lenient imports and checks that corrupted requests cannot crash the system or bypass review.
 
-[docs/validation.md](docs/validation.md) records verified environments and results. The included CI workflow covers Linux Python 3.11–3.13 and Windows Python 3.12. Lint/format checks use Ruff 0.17.0. The repository remains local, so remote CI has not run.
+[docs/validation.md](docs/validation.md) records verified local environments and results. The included CI workflow covers Linux Python 3.11–3.13 and Windows Python 3.12. Lint/format checks use Ruff 0.17.0. Check the submission repository's Actions page for remote CI results.
 
 The design favors an auditable assignment-sized system. SQLite and sequential batch execution suit a local demonstration; multi-user service deployment would need stronger authentication, storage concurrency planning and operational controls. There is no market-data feed, RAG corpus, FX conversion, authenticated enterprise CRM or trade execution in this scope.

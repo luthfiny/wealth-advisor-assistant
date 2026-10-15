@@ -1,7 +1,7 @@
 {
   "schema_version": "1.1",
-  "run_id": "da66bc45-f896-4dcd-a2d7-81d645a2c62b",
-  "created_at": "2026-10-15T04:58:41.956728+00:00",
+  "run_id": "e87f5f5c-9c08-47f1-9f79-ce6dc533c3d0",
+  "created_at": "2026-10-15T07:58:17.779911+00:00",
   "client_id": "client_demo_001",
   "as_of": "2026-10-01",
   "currency": "USD",
@@ -75,7 +75,7 @@
       "latest_end": "2026-09-30"
     },
     "historical_comparison": {
-      "previous_run_id": "8d17988e-e6a1-4551-91b3-3c75788950ae",
+      "previous_run_id": "8269a694-a347-41fe-a07a-02384328c0c2",
       "previous_as_of": "2026-09-01",
       "net_worth_change": "-78000.00",
       "cash_runway_change": "-13.00"
@@ -130,7 +130,7 @@
       "title": "Recorded net worth decline exceeds the review threshold",
       "explanation": "Compare source coverage and cash movements before attributing a cause.",
       "evidence": {
-        "previous_run_id": "8d17988e-e6a1-4551-91b3-3c75788950ae",
+        "previous_run_id": "8269a694-a347-41fe-a07a-02384328c0c2",
         "previous_as_of": "2026-09-01",
         "previous_net_worth": "260000.00",
         "current_net_worth": "182000.00",
@@ -276,7 +276,7 @@
       "title": "Recorded net worth decline exceeds the review threshold",
       "explanation": "Compare source coverage and cash movements before attributing a cause.",
       "evidence": {
-        "previous_run_id": "8d17988e-e6a1-4551-91b3-3c75788950ae",
+        "previous_run_id": "8269a694-a347-41fe-a07a-02384328c0c2",
         "previous_as_of": "2026-09-01",
         "previous_net_worth": "260000.00",
         "current_net_worth": "182000.00",
@@ -409,7 +409,7 @@
       "title": "Recorded net worth decline exceeds the review threshold",
       "explanation": "Compare source coverage and cash movements before attributing a cause.",
       "evidence": {
-        "previous_run_id": "8d17988e-e6a1-4551-91b3-3c75788950ae",
+        "previous_run_id": "8269a694-a347-41fe-a07a-02384328c0c2",
         "previous_as_of": "2026-09-01",
         "previous_net_worth": "260000.00",
         "current_net_worth": "182000.00",
@@ -713,7 +713,7 @@
       "tool": "financial.prepare",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.35,
+      "duration_ms": 0.34,
       "error_code": null,
       "error_kind": null
     },
@@ -731,7 +731,7 @@
       "tool": "memory.crm.save",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 8.58,
+      "duration_ms": 7.89,
       "error_code": null,
       "error_kind": null
     },
@@ -740,7 +740,7 @@
       "tool": "memory.history",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.47,
+      "duration_ms": 0.43,
       "error_code": null,
       "error_kind": null
     },
@@ -749,25 +749,7 @@
       "tool": "memory.feedback",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.21,
-      "error_code": null,
-      "error_kind": null
-    },
-    {
-      "agent": "analyzer",
-      "tool": "analytics.prepare",
-      "ok": true,
-      "attempts": 1,
-      "duration_ms": 0.1,
-      "error_code": null,
-      "error_kind": null
-    },
-    {
-      "agent": "analyzer",
-      "tool": "analytics.catalog",
-      "ok": true,
-      "attempts": 1,
-      "duration_ms": 0.02,
+      "duration_ms": 0.2,
       "error_code": null,
       "error_kind": null
     },
@@ -776,7 +758,7 @@
       "tool": "analytics.scan",
       "ok": true,
       "attempts": 1,
-      "duration_ms": 0.14,
+      "duration_ms": 0.3,
       "error_code": null,
       "error_kind": null
     },
@@ -876,7 +858,8 @@
   "reviewed_actions": [],
   "guardrails": {
     "human_review_required": true,
-    "portfolio_discussion_allowed": true
+    "portfolio_discussion_allowed": true,
+    "portfolio_blockers": []
   },
   "sources": {
     "financial_data": "provided_json",
@@ -890,7 +873,7 @@
       "updated_at": "2026-08-15"
     },
     "history_run_ids": [
-      "8d17988e-e6a1-4551-91b3-3c75788950ae"
+      "8269a694-a347-41fe-a07a-02384328c0c2"
     ]
   },
   "warnings": [],
@@ -898,17 +881,17 @@
     {
       "agent": "data_fetcher",
       "status": "completed",
-      "duration_ms": 9.73
+      "duration_ms": 8.97
     },
     {
       "agent": "analyzer",
       "status": "completed",
-      "duration_ms": 0.38
+      "duration_ms": 0.39
     },
     {
       "agent": "advisor",
       "status": "completed",
-      "duration_ms": 0.22
+      "duration_ms": 0.23
     }
   ],
   "review": null,

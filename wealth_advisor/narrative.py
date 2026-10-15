@@ -6,19 +6,14 @@ never appears in the report: only approved sentence IDs can select local sentenc
 """
 
 import os
-import time
 from decimal import Decimal
 from urllib.error import HTTPError, URLError
-from urllib.request import HTTPRedirectHandler, Request, build_opener
+from urllib.request import Request
 
 from .domain import dumps, loads
+from .http_transport import ResponseTooLarge, read_http_response
 from .priority import review_priority
 from .tool_runtime import ToolError
-
-
-class _NoRedirect(HTTPRedirectHandler):
-    def redirect_request(self, request, fp, code, msg, headers, newurl):
-        return None
 
 
 def sentence_catalog(brief):
@@ -129,7 +124,7 @@ class ClaudeNarrativeTool:
 
     def __init__(self, settings, opener=None):
         self.settings = settings
-        self.opener = opener or build_opener(_NoRedirect())
+        self.opener = opener
 
     def execute(self, arguments):
         key = os.environ.get("ANTHROPIC_API_KEY")
@@ -158,34 +153,19 @@ class ClaudeNarrativeTool:
             },
             method="POST",
         )
-        deadline = arguments.get("_deadline", time.monotonic() + self.settings.timeout_seconds)
         try:
-            with self.opener.open(
-                request,
-                timeout=min(self.settings.timeout_seconds, max(0.001, deadline - time.monotonic())),
-            ) as response:
-                chunks, size = [], 0
-                while size <= 65536:
-                    remaining = deadline - time.monotonic()
-                    if remaining <= 0:
-                        raise ToolError(
-                            "narrative_timeout", "Narrative deadline exhausted", retryable=True
-                        )
-                    native_socket = getattr(
-                        getattr(getattr(response, "fp", None), "raw", None), "_sock", None
-                    )
-                    if native_socket is not None:
-                        native_socket.settimeout(min(self.settings.timeout_seconds, remaining))
-                    chunk = response.read1(min(8192, 65537 - size))
-                    if not chunk:
-                        break
-                    chunks.append(chunk)
-                    size += len(chunk)
-                if size > 65536:
-                    raise ToolError(
-                        "narrative_invalid_response", "Narrative response exceeded size limit"
-                    )
-                result = loads(b"".join(chunks))
+            result = loads(
+                read_http_response(
+                    request,
+                    timeout=self.settings.timeout_seconds,
+                    deadline=arguments.get("_deadline"),
+                    opener=self.opener,
+                )
+            )
+        except ResponseTooLarge:
+            raise ToolError(
+                "narrative_invalid_response", "Narrative response exceeded size limit"
+            ) from None
         except HTTPError as exc:
             status = exc.code
             exc.close()

@@ -1,7 +1,7 @@
 """Detector catalog, independent failure boundaries, and compatible analysis entry points."""
 
 from collections import defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Collection
 from dataclasses import dataclass, replace
 from typing import Any
 
@@ -44,11 +44,14 @@ class DetectorRegistry:
             for d in self.detectors
         ]
 
-    def run(self, context: AnalysisContext, selected: list[str] | None = None) -> AnalysisResult:
+    def run(
+        self, context: AnalysisContext, selected: Collection[str] | None = None
+    ) -> AnalysisResult:
         known = {d.name for d in self.detectors}
         if selected is not None and not set(selected) <= known:
             raise ValidationError("Configuration references an unknown detector")
         raw, executed, skipped, failed = [], [], [], []
+        published_ids = set()
         for detector in self.detectors:
             if selected is not None and detector.name not in selected:
                 skipped.append({"check": detector.name, "reason": "disabled_by_configuration"})
@@ -65,10 +68,16 @@ class DetectorRegistry:
             try:
                 findings = detector.function(context)
                 if not isinstance(findings, list) or any(
-                    not isinstance(f, Finding) or f.severity not in RANK for f in findings
+                    not isinstance(f, Finding) for f in findings
                 ):
                     raise TypeError("Detector output violates the finding contract")
+                for finding in findings:
+                    finding.validate()
+                ids = {f.id for f in findings}
+                if len(ids) != len(findings) or ids & published_ids:
+                    raise ValidationError("Detector finding IDs must be unique")
                 raw.extend(findings)
+                published_ids.update(ids)
                 executed.append(detector.name)
             except Exception as exc:
                 failed.append(
@@ -119,7 +128,7 @@ def analyze_detailed(
     history: list[dict[str, Any]],
     policy: AnalysisPolicy | None = None,
     registry: DetectorRegistry | None = None,
-    selected: list[str] | None = None,
+    selected: Collection[str] | None = None,
 ) -> AnalysisResult:
     return (registry or DetectorRegistry()).run(
         AnalysisContext(data, profile, history, policy or AnalysisPolicy()), selected
