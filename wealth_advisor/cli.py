@@ -68,6 +68,22 @@ def write_result(report: dict[str, Any], output: Path | None) -> None:
     print(result, end="")
 
 
+def _validate_paths(args: argparse.Namespace) -> None:
+    """Check export destinations before any analysis or review mutation occurs."""
+    output = getattr(args, "output", None)
+    if output is None:
+        return
+    for name in ("input", "db", "crm_fixture"):
+        source = getattr(args, name, None)
+        if source is not None and (
+            output.resolve() == source.resolve()
+            or (output.exists() and source.exists() and output.samefile(source))
+        ):
+            raise ValidationError(
+                "Output must not replace the input, CRM fixture or memory database"
+            )
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Auditable wealth advisor agent simulation")
     parser.add_argument(
@@ -111,6 +127,7 @@ def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     configure_logging(args.log_level)
     try:
+        _validate_paths(args)
         if args.command == "analyze":
             system, _ = build_system(
                 db_path=args.db,

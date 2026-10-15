@@ -236,6 +236,7 @@ def analyze(
                 "recent_outflows": len(recent),
             },
         )
+    category_statistics: dict[str, tuple[Decimal, Decimal, Decimal]] = {}
     for tx in recent:
         evidence: dict[str, Any] = {
             "transaction_id": tx.id,
@@ -256,14 +257,18 @@ def analyze(
         reference = by_category[tx.category]
         if len(reference) < policy.minimum_baseline:
             continue
-        center = median(reference)
-        mad = median([abs(amount - center) for amount in reference])
-        # A ratio guard handles constant histories (MAD=0) and avoids tiny-spend false alarms.
-        threshold = max(
-            policy.minimum_spike,
-            center * policy.spike_ratio,
-            center + policy.robust_z * Decimal("1.4826") * mad,
-        )
+        if tx.category not in category_statistics:
+            center = median(reference)
+            mad = median([abs(amount - center) for amount in reference])
+            # Each category has one historical baseline; reuse it for all recent outflows.
+            # A ratio guard handles MAD=0 and avoids tiny-spend false alarms.
+            threshold = max(
+                policy.minimum_spike,
+                center * policy.spike_ratio,
+                center + policy.robust_z * Decimal("1.4826") * mad,
+            )
+            category_statistics[tx.category] = center, mad, threshold
+        center, mad, threshold = category_statistics[tx.category]
         if tx.amount > threshold:
             add(
                 "UNUSUAL_TRANSACTION",

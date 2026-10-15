@@ -32,6 +32,28 @@ def dumps(value: Any, *, indent: int | None = 2) -> str:
     return json.dumps(value, default=json_default, indent=indent, allow_nan=False)
 
 
+def loads(payload: str | bytes) -> Any:
+    """Read external JSON without float rounding or ambiguous duplicate fields."""
+
+    def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValidationError("JSON objects must not contain duplicate fields")
+            result[key] = value
+        return result
+
+    def reject_constant(value: str) -> Any:
+        raise ValidationError("JSON must not contain NaN or Infinity")
+
+    return json.loads(
+        payload,
+        parse_float=Decimal,
+        parse_constant=reject_constant,
+        object_pairs_hook=unique_object,
+    )
+
+
 def object_value(value: Any, name: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValidationError(f"{name} must be an object")
@@ -60,8 +82,12 @@ def decimal_value(value: Any, name: str, *, money: bool = True) -> Decimal:
         raise ValidationError(f"{name} must be a nonnegative decimal") from exc
     if not result.is_finite() or result < 0 or result > Decimal("1000000000000000"):
         raise ValidationError(f"{name} must be finite, nonnegative and at most 10^15")
-    if money and result != result.quantize(Decimal("0.01")):
-        raise ValidationError(f"{name} must have at most two decimal places")
+    if money:
+        normalized = result.quantize(Decimal("0.01"))
+        if result != normalized:
+            raise ValidationError(f"{name} must have at most two decimal places")
+        # Canonical cents also bound serialization of zero with an extreme exponent.
+        return normalized.copy_abs() if normalized.is_zero() else normalized
     return result
 
 

@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 from urllib.parse import unquote, urlsplit
 
+from .domain import dumps
 from .observability import emit
 
 
@@ -41,7 +41,7 @@ def create_server(
                 status = 200 if payload is not None else 404
                 if payload is None:
                     payload = {"error": "client_not_found"}
-            encoded = json.dumps(payload).encode()
+            encoded = dumps(payload, indent=None).encode()
             self.send_response(status)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(encoded)))

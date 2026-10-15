@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import math
 import time
@@ -15,7 +14,7 @@ from urllib.parse import quote, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from .analysis import analyze
-from .domain import ClientData, CRMProfile, ValidationError
+from .domain import ClientData, CRMProfile, ValidationError, loads
 from .memory import Memory, MemoryError
 from .observability import emit
 
@@ -115,7 +114,7 @@ def read_json(path: Path, *, max_bytes: int = 10_000_000) -> Any:
             payload = handle.read(max_bytes + 1)
         if len(payload) > max_bytes:
             raise ToolError("input_too_large", "JSON file exceeds the size limit")
-        return json.loads(payload)
+        return loads(payload)
     except (OSError, UnicodeError, ValueError) as exc:
         raise ToolError("input_unreadable", "Cannot read a valid JSON file") from exc
 
@@ -181,7 +180,7 @@ class HttpCRMTool:
                 payload = response.read(65_537)
                 if len(payload) > 65_536:
                     raise ToolError("crm_invalid_response", "CRM response is too large")
-                raw = json.loads(payload)
+                raw = loads(payload)
         except HTTPError as exc:
             transient = exc.code in {408, 429, 500, 502, 503, 504}
             exc.close()

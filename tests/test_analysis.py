@@ -15,6 +15,31 @@ def run_analysis(raw=None, profile=None, history=None):
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_large_flat_history_keeps_expected_analysis(self):
+        raw = client_raw()
+        raw["transactions"] = [
+            {
+                "id": f"tx_{i}",
+                "date": "2026-08-15" if i < 5000 else "2026-09-15",
+                "amount": "100.00",
+                "kind": "expense",
+                "category": "groceries",
+                "counterparty": "Synthetic",
+            }
+            for i in range(10000)
+        ]
+        metrics, findings = run_analysis(raw)
+        self.assertEqual(metrics["transaction_count"], 10000)
+        self.assertEqual(metrics["anomaly_coverage"]["baseline_outflows"], 5000)
+        self.assertEqual(
+            {f.code for f in findings},
+            {
+                "LOW_LIQUIDITY",
+                "SINGLE_ASSET_CONCENTRATION",
+                "RISK_PROFILE_MISMATCH",
+            },
+        )
+
     def test_policy_overrides_control_decisions_and_are_exported(self):
         data = ClientData.parse(client_raw())
         profile = CRMProfile.parse(profile_raw(), data.client_id, data.as_of)

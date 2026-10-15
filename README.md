@@ -140,7 +140,7 @@ The HTTP adapter uses a two-second socket timeout, a 64 KiB response cap, respon
 
 [samples/client.json](samples/client.json) is the full input example. Required top-level fields are `client_id`, `as_of`, `history_start`, `currency`, `cash_balance`, `monthly_income`, `monthly_expenses`, `liabilities`, `holdings` and `transactions`.
 
-- Monetary values are nonnegative decimal strings, with at most two decimal places and a maximum of 10^15 per value. JSON numbers are accepted, but strings preserve the sender's intended decimal precision. Calculations use `Decimal`; output decimals are strings.
+- Monetary values are nonnegative decimal strings, with at most two decimal places and a maximum of 10^15 per value. JSON numeric tokens are also parsed directly as `Decimal`, preserving every cent. Monetary inputs are normalized to two decimal places; output decimals are strings.
 - Amounts use a single normalized currency. Explicitly mismatched transaction or holding currencies are rejected. This demo assumes two-decimal accounting units; it does not perform FX conversion.
 - Transaction amounts are magnitudes. `kind` supplies direction: `expense`, `withdrawal`, `income`, `refund`, or `internal_transfer`. Internal transfers, income and refunds do not count as outflows. Refunds are not netted against category expenses.
 - Every transaction has a unique `id`, a date within `history_start` through `as_of`, a category and a counterparty. Duplicate IDs fail validation, so rerun imports do not silently double-count them.
@@ -150,7 +150,7 @@ The HTTP adapter uses a two-second socket timeout, a 64 KiB response cap, respon
 - The `as_of` date anchors all windows. The system rejects future-dated transactions and CRM snapshots newer than that date. No analysis decision depends on the computer's current date.
 - CRM must match the client ID and contain risk tolerance, investment horizon, verification status and snapshot date. Profiles older than 180 days or without verified KYC block portfolio discussion.
 
-Unrecognized input fields are ignored. Missing required fields fail validation. Empty holdings and transaction arrays are allowed and produce coverage limitations rather than invented observations. Financial files are capped at 10 MB, with at most 100,000 transactions and 10,000 holdings.
+Unrecognized input fields are ignored. Duplicate JSON fields and nonstandard `NaN`/`Infinity` tokens are rejected. Missing required fields fail validation. Empty holdings and transaction arrays are allowed and produce coverage limitations rather than invented observations. Financial files are capped at 10 MB, with at most 100,000 transactions and 10,000 holdings. Export paths cannot replace the input file, CRM fixture or memory database, including aliases to the same file; review exports are checked before recording a decision.
 
 ## Analysis policy
 
@@ -189,7 +189,15 @@ JSON logs include run ID, routing decisions, tool attempts, error codes, elapsed
 python3 -m unittest discover -s tests -v
 ```
 
-The suite covers hand-calculated financial results, statistical and absolute thresholds, flat baselines, temporal coverage, currency and identity validation, actual loopback HTTP requests, retries, fallbacks, memory isolation, review overrides, immutable originals, concurrent decisions, and CLI JSON/log separation. CI runs the tests on Python 3.11, 3.12 and 3.13 on Linux, plus Python 3.12 on Windows. CI configuration is included; local verification is documented in [docs/validation.md](docs/validation.md).
+Run a separate validation of the actual CLI and HTTP server processes:
+
+```bash
+python3 scripts/validate.py
+```
+
+It checks 13 scenarios, including approval with an override, rejection, historical memory, healthy and failing HTTP CRM servers, invalid input and protected output paths. Each run saves JSON results and event logs in a fresh `output/validation/` directory, along with `summary.json`, and stops its servers on completion. It uses only fictional client data. Set `--output-root PATH` to keep validation artifacts elsewhere.
+
+The test suite covers hand-calculated financial results, statistical and absolute thresholds, large flat histories, temporal coverage, exact decimal parsing, currency and identity validation, actual loopback HTTP requests, socket timeouts, response-size limits, redirects, retries, fallbacks, memory isolation, review overrides, immutable originals, concurrent decisions, and CLI JSON/log separation. CI is configured to run the tests and process validation on Python 3.11, 3.12 and 3.13 on Linux, plus Python 3.12 on Windows. Local verification is documented in [docs/validation.md](docs/validation.md).
 
 ## Decisions and trade-offs
 
