@@ -2,110 +2,30 @@
 
 from __future__ import annotations
 
-import logging
 import math
 import time
-from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-from .analysis import analyze
+from .analysis import DetectorRegistry
 from .domain import ClientData, CRMProfile, ValidationError, loads
 from .memory import Memory, MemoryError
-from .observability import emit
-
-
-class ToolError(RuntimeError):
-    def __init__(self, code: str, message: str, *, retryable: bool = False):
-        super().__init__(message)
-        self.code = code
-        self.retryable = retryable
-
-
-class Tool(Protocol):
-    def execute(self, arguments: dict[str, Any]) -> Any: ...
-
-
-class ToolClient(Protocol):
-    def call(self, name: str, arguments: dict[str, Any], *, run_id: str) -> Any: ...
-
-
-class ToolRegistry:
-    """Bounded retries for transient failures only; tool payloads never enter logs."""
-
-    def __init__(
-        self,
-        tools: dict[str, Tool],
-        *,
-        max_attempts: int = 3,
-        backoff_seconds: float = 0.05,
-        sleeper: Callable[[float], None] = time.sleep,
-    ):
-        if max_attempts < 1:
-            raise ValueError("max_attempts must be positive")
-        self._tools = dict(tools)
-        self._max_attempts = max_attempts
-        self._backoff = backoff_seconds
-        self._sleep = sleeper
-
-    def call(self, name: str, arguments: dict[str, Any], *, run_id: str) -> Any:
-        tool = self._tools.get(name)
-        if tool is None:
-            raise ToolError("unknown_tool", "Requested tool is not registered")
-        for attempt in range(1, self._max_attempts + 1):
-            started = time.monotonic()
-            emit("tool.started", run_id=run_id, tool=name, attempt=attempt)
-            try:
-                result = tool.execute(arguments)
-            except ValidationError as exc:
-                emit(
-                    "tool.failed",
-                    level=logging.WARNING,
-                    run_id=run_id,
-                    tool=name,
-                    attempt=attempt,
-                    code="invalid_data",
-                    retryable=False,
-                )
-                raise ToolError("invalid_data", str(exc)) from exc
-            except ToolError as exc:
-                emit(
-                    "tool.failed",
-                    level=logging.WARNING,
-                    run_id=run_id,
-                    tool=name,
-                    attempt=attempt,
-                    code=exc.code,
-                    retryable=exc.retryable,
-                )
-                if not exc.retryable or attempt == self._max_attempts:
-                    raise
-                self._sleep(self._backoff * 2 ** (attempt - 1))
-            except Exception as exc:
-                emit(
-                    "tool.failed",
-                    level=logging.ERROR,
-                    run_id=run_id,
-                    tool=name,
-                    attempt=attempt,
-                    code="tool_internal_error",
-                    retryable=False,
-                )
-                raise ToolError("tool_internal_error", "Tool failed unexpectedly") from exc
-            else:
-                emit(
-                    "tool.completed",
-                    run_id=run_id,
-                    tool=name,
-                    attempt=attempt,
-                    duration_ms=round((time.monotonic() - started) * 1000, 2),
-                )
-                return result
-        raise AssertionError("unreachable")
+from .metrics import AnalysisContext
+from .normalize import prepare_input
+from .policy import AnalysisPolicy
+from .tool_runtime import (
+    ToolClient as ToolClient,
+)
+from .tool_runtime import (
+    ToolError as ToolError,
+)
+from .tool_runtime import (
+    ToolRegistry as ToolRegistry,
+)
 
 
 def read_json(path: Path, *, max_bytes: int = 10_000_000) -> Any:
@@ -122,6 +42,16 @@ def read_json(path: Path, *, max_bytes: int = 10_000_000) -> Any:
 class FinancialDataTool:
     def execute(self, arguments: dict[str, Any]) -> ClientData:
         return ClientData.parse(read_json(Path(arguments["path"])))
+
+
+class InputPreparationTool:
+    """Validate imports and return an explicit data-quality record."""
+
+    def __init__(self, mode="strict"):
+        self.mode = mode
+
+    def execute(self, arguments):
+        return prepare_input(read_json(Path(arguments["path"])), self.mode)
 
 
 class FixtureCRMTool:
@@ -151,6 +81,8 @@ class _NoRedirect(HTTPRedirectHandler):
 class HttpCRMTool:
     """Small real HTTP adapter with timeout, bounded reads and explicit retry semantics."""
 
+    supports_deadline = True
+
     def __init__(self, base_url: str, *, timeout: float = 2.0):
         parts = urlsplit(base_url)
         if (
@@ -176,8 +108,27 @@ class HttpCRMTool:
             headers={"Accept": "application/json"},
         )
         try:
-            with self._opener.open(request, timeout=self._timeout) as response:
-                payload = response.read(65_537)
+            deadline = arguments.get("_deadline", time.monotonic() + self._timeout)
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise ToolError("crm_timeout", "CRM deadline exhausted", retryable=True)
+            with self._opener.open(request, timeout=min(self._timeout, remaining)) as response:
+                chunks, size = [], 0
+                while size <= 65536:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise ToolError("crm_timeout", "CRM deadline exhausted", retryable=True)
+                    native_socket = getattr(
+                        getattr(getattr(response, "fp", None), "raw", None), "_sock", None
+                    )
+                    if native_socket is not None:
+                        native_socket.settimeout(min(self._timeout, remaining))
+                    chunk = response.read1(min(8192, 65537 - size))
+                    if not chunk:
+                        break
+                    chunks.append(chunk)
+                    size += len(chunk)
+                payload = b"".join(chunks)
                 if len(payload) > 65_536:
                     raise ToolError("crm_invalid_response", "CRM response is too large")
                 raw = loads(payload)
@@ -195,8 +146,46 @@ class HttpCRMTool:
 
 
 class AnalyticsTool:
+    def __init__(self, registry=None, policy=None, selected=None):
+        self.registry = registry or DetectorRegistry()
+        self.policy = policy or AnalysisPolicy()
+        self.selected = selected
+
     def execute(self, arguments: dict[str, Any]) -> Any:
-        return analyze(arguments["data"], arguments["profile"], arguments["history"])
+        context = arguments.get("context") or AnalysisContext(
+            arguments["data"], arguments["profile"], arguments["history"], self.policy
+        )
+        return self.registry.run(context, arguments.get("selected", self.selected))
+
+
+@dataclass
+class CatalogTool:
+    registry: Any
+
+    def execute(self, arguments):
+        return self.registry.catalog()
+
+
+@dataclass
+class AnalysisPreparationTool:
+    policy: Any
+
+    def execute(self, arguments):
+        return AnalysisContext(
+            arguments["data"], arguments["profile"], arguments["history"], self.policy
+        )
+
+
+@dataclass
+class MemoryTool:
+    memory: Any
+    operation: str
+
+    def execute(self, arguments):
+        try:
+            return getattr(self.memory, self.operation)(**arguments)
+        except MemoryError as exc:
+            raise ToolError("memory_unavailable", "Memory operation failed") from exc
 
 
 @dataclass

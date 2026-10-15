@@ -1,0 +1,2726 @@
+{
+  "balanced": {
+    "schema_version": "1.1",
+    "run_id": "d6eb4847-394f-4cfe-b9c5-6992fab34af8",
+    "created_at": "2026-10-15T04:58:42.050538+00:00",
+    "client_id": "balanced_demo",
+    "as_of": "2026-10-01",
+    "currency": "USD",
+    "status": "pending_review",
+    "execution_status": "completed",
+    "advisory_release_allowed": false,
+    "reasoning_mode": "deterministic_policy",
+    "summary": {
+      "finding_count": 0,
+      "high_severity_count": 0,
+      "action_count": 0
+    },
+    "metrics": {
+      "currency": "USD",
+      "total_assets": "160000.00",
+      "invested_assets": "100000.00",
+      "total_liabilities": "0.00",
+      "net_worth": "160000.00",
+      "declared_monthly_surplus": "3000.00",
+      "cash_runway_months": "10.00",
+      "equity_share_of_investments": "0.60",
+      "transaction_count": 27,
+      "policy": {
+        "version": "2026-10-demo-v2",
+        "minimum_baseline": 8,
+        "absolute_outflow": "10000",
+        "minimum_spike": "500",
+        "spike_ratio": "4",
+        "robust_z": "6",
+        "spending_growth": "0.50",
+        "minimum_spending_increase": "500",
+        "emergency_months": "6",
+        "critical_cash_months": "3",
+        "single_asset_limit": "0.40",
+        "profile_max_age_days": 180,
+        "conservative_equity_limit": "0.40",
+        "moderate_equity_limit": "0.65",
+        "aggressive_equity_limit": "0.85",
+        "short_horizon_years": 3,
+        "short_horizon_equity_limit": "0.40",
+        "recent_days": 30,
+        "baseline_days": 90,
+        "net_worth_decline": "0.20",
+        "new_counterparty_minimum": "2000",
+        "income_drop_fraction": "0.30",
+        "duplicate_window_minutes": 10,
+        "velocity_count": 8,
+        "velocity_window_minutes": 60,
+        "odd_hours_minimum": "1000",
+        "foreign_minimum": "2000",
+        "structuring_minimum": "8000",
+        "structuring_maximum": "10000",
+        "structuring_count": 3,
+        "structuring_window_days": 7
+      },
+      "anomaly_coverage": {
+        "baseline_start": "2026-07-01",
+        "baseline_end": "2026-08-31",
+        "recent_start": "2026-09-01",
+        "recent_end": "2026-10-01",
+        "baseline_outflows": 16,
+        "recent_outflows": 8,
+        "eligible_categories": [
+          "groceries"
+        ]
+      },
+      "spending_comparison": {
+        "available": true,
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "latest_end": "2026-09-30"
+      }
+    },
+    "findings": [],
+    "raw_findings": [],
+    "detector_signals": [],
+    "suppressed_findings": [],
+    "feedback_events": [],
+    "recurring_finding_ids": [],
+    "review_priority": {
+      "score": 0,
+      "band": "low",
+      "calibrated": false,
+      "meaning": "Heuristic review priority; not a probability or investment risk rating."
+    },
+    "original_review_priority": {
+      "score": 0,
+      "band": "low",
+      "calibrated": false,
+      "meaning": "Heuristic review priority; not a probability or investment risk rating."
+    },
+    "policy_id": "5972287500e8a883436f3441a9033f01c1a334f71da904ccf2bf4414a9177927",
+    "configuration": {
+      "analysis": {
+        "version": "2026-10-demo-v2",
+        "minimum_baseline": 8,
+        "absolute_outflow": "10000",
+        "minimum_spike": "500",
+        "spike_ratio": "4",
+        "robust_z": "6",
+        "spending_growth": "0.50",
+        "minimum_spending_increase": "500",
+        "emergency_months": "6",
+        "critical_cash_months": "3",
+        "single_asset_limit": "0.40",
+        "profile_max_age_days": 180,
+        "conservative_equity_limit": "0.40",
+        "moderate_equity_limit": "0.65",
+        "aggressive_equity_limit": "0.85",
+        "short_horizon_years": 3,
+        "short_horizon_equity_limit": "0.40",
+        "recent_days": 30,
+        "baseline_days": 90,
+        "net_worth_decline": "0.20",
+        "new_counterparty_minimum": "2000",
+        "income_drop_fraction": "0.30",
+        "duplicate_window_minutes": 10,
+        "velocity_count": 8,
+        "velocity_window_minutes": 60,
+        "odd_hours_minimum": "1000",
+        "foreign_minimum": "2000",
+        "structuring_minimum": "8000",
+        "structuring_maximum": "10000",
+        "structuring_count": 3,
+        "structuring_window_days": 7
+      },
+      "tools": {
+        "max_attempts": 3,
+        "backoff_seconds": 0.05,
+        "deadline_seconds": 10.0,
+        "circuit_threshold": 4,
+        "circuit_cooldown_seconds": 30.0
+      },
+      "review": {
+        "feedback_ttl_days": 90
+      },
+      "crm": {
+        "cache_max_age_days": 30,
+        "timeout_seconds": 2.0
+      },
+      "narrative": {
+        "enabled": false,
+        "model": "claude-haiku-4-5",
+        "timeout_seconds": 5.0,
+        "max_tokens": 256
+      },
+      "enabled_checks": null,
+      "ingestion_mode": "lenient",
+      "max_in_flight": 4
+    },
+    "data_quality": {
+      "mode": "lenient",
+      "score": "1.000",
+      "issues": [],
+      "records_dropped": 0,
+      "records_total": 30
+    },
+    "executed_checks": [
+      "liquidity",
+      "cash_flow",
+      "balance_sheet",
+      "concentration",
+      "crm_context",
+      "suitability",
+      "baseline_coverage",
+      "large_outflows",
+      "statistical_outflows",
+      "spending_growth",
+      "new_counterparty",
+      "income_drop",
+      "duplicate_charges",
+      "transaction_velocity",
+      "odd_hours",
+      "foreign_activity",
+      "structuring_pattern"
+    ],
+    "skipped_checks": [
+      {
+        "check": "historical_comparison",
+        "reason": "missing_inputs: history"
+      }
+    ],
+    "failed_checks": [],
+    "narrative": {
+      "text": "Recorded net worth is USD 160,000.00. Cash covers 10.00 months of declared expenses. Review priority is 0/100 (low), an uncalibrated triage heuristic. Signals request verification and do not establish wrongdoing. Recommendations remain a draft awaiting human approval.",
+      "source": "template",
+      "sentences": [
+        {
+          "text": "Recorded net worth is USD 160,000.00.",
+          "citations": [
+            "metrics.net_worth"
+          ]
+        },
+        {
+          "text": "Cash covers 10.00 months of declared expenses.",
+          "citations": [
+            "metrics.cash_runway_months"
+          ]
+        },
+        {
+          "text": "Review priority is 0/100 (low), an uncalibrated triage heuristic.",
+          "citations": [
+            "review_priority"
+          ]
+        },
+        {
+          "text": "Signals request verification and do not establish wrongdoing.",
+          "citations": []
+        },
+        {
+          "text": "Recommendations remain a draft awaiting human approval.",
+          "citations": [
+            "status"
+          ]
+        }
+      ],
+      "selected_finding_ids": []
+    },
+    "tool_calls": [
+      {
+        "agent": "data_fetcher",
+        "tool": "financial.prepare",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 2.5,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "crm.profile",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.2,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.crm.save",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 66.5,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.history",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.42,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.feedback",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.28,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.prepare",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.13,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.catalog",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.02,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.scan",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.16,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "advisor",
+        "tool": "narrative.template",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.03,
+        "error_code": null,
+        "error_kind": null
+      }
+    ],
+    "actions": [],
+    "reviewed_actions": [],
+    "guardrails": {
+      "human_review_required": true,
+      "portfolio_discussion_allowed": true
+    },
+    "sources": {
+      "financial_data": "provided_json",
+      "crm_available": true,
+      "crm_source": "fresh",
+      "crm_profile": {
+        "client_id": "balanced_demo",
+        "risk_tolerance": "moderate",
+        "investment_horizon_years": 8,
+        "kyc_status": "verified",
+        "updated_at": "2026-08-15"
+      },
+      "history_run_ids": []
+    },
+    "warnings": [],
+    "events": [
+      {
+        "agent": "data_fetcher",
+        "status": "completed",
+        "duration_ms": 69.95
+      },
+      {
+        "agent": "analyzer",
+        "status": "completed",
+        "duration_ms": 0.51
+      },
+      {
+        "agent": "advisor",
+        "status": "completed",
+        "duration_ms": 0.04
+      }
+    ],
+    "review": null,
+    "memory_persisted": true
+  },
+  "activity": {
+    "schema_version": "1.1",
+    "run_id": "eb40032c-23f9-44a3-93b7-1ee589ee0372",
+    "created_at": "2026-10-15T04:58:42.130479+00:00",
+    "client_id": "activity_demo",
+    "as_of": "2026-10-01",
+    "currency": "USD",
+    "status": "pending_review",
+    "execution_status": "completed",
+    "advisory_release_allowed": false,
+    "reasoning_mode": "deterministic_policy",
+    "summary": {
+      "finding_count": 17,
+      "high_severity_count": 4,
+      "action_count": 17
+    },
+    "metrics": {
+      "currency": "USD",
+      "total_assets": "106000.00",
+      "invested_assets": "100000.00",
+      "total_liabilities": "0.00",
+      "net_worth": "106000.00",
+      "declared_monthly_surplus": "3000.00",
+      "cash_runway_months": "1.00",
+      "equity_share_of_investments": "0.60",
+      "transaction_count": 38,
+      "policy": {
+        "version": "2026-10-demo-v2",
+        "minimum_baseline": 8,
+        "absolute_outflow": "10000",
+        "minimum_spike": "500",
+        "spike_ratio": "4",
+        "robust_z": "6",
+        "spending_growth": "0.50",
+        "minimum_spending_increase": "500",
+        "emergency_months": "6",
+        "critical_cash_months": "3",
+        "single_asset_limit": "0.40",
+        "profile_max_age_days": 180,
+        "conservative_equity_limit": "0.40",
+        "moderate_equity_limit": "0.65",
+        "aggressive_equity_limit": "0.85",
+        "short_horizon_years": 3,
+        "short_horizon_equity_limit": "0.40",
+        "recent_days": 30,
+        "baseline_days": 90,
+        "net_worth_decline": "0.20",
+        "new_counterparty_minimum": "2000",
+        "income_drop_fraction": "0.30",
+        "duplicate_window_minutes": 10,
+        "velocity_count": 8,
+        "velocity_window_minutes": 60,
+        "odd_hours_minimum": "1000",
+        "foreign_minimum": "2000",
+        "structuring_minimum": "8000",
+        "structuring_maximum": "10000",
+        "structuring_count": 3,
+        "structuring_window_days": 7
+      },
+      "anomaly_coverage": {
+        "baseline_start": "2026-07-01",
+        "baseline_end": "2026-08-31",
+        "recent_start": "2026-09-01",
+        "recent_end": "2026-10-01",
+        "baseline_outflows": 16,
+        "recent_outflows": 19,
+        "eligible_categories": [
+          "groceries"
+        ]
+      },
+      "spending_comparison": {
+        "available": true,
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "latest_end": "2026-09-30"
+      }
+    },
+    "findings": [
+      {
+        "id": "F-INCOME_DROP",
+        "code": "INCOME_DROP",
+        "severity": "high",
+        "title": "Recorded income declined",
+        "explanation": "Income receipts declined between two complete covered months. Confirm coverage and timing.",
+        "evidence": {
+          "previous_month": "2026-08-01",
+          "latest_month": "2026-09-01",
+          "previous_income": "9000.00",
+          "latest_income": "4500.00",
+          "decline_fraction": "0.50",
+          "threshold": "0.30"
+        }
+      },
+      {
+        "id": "F-LOW_LIQUIDITY",
+        "code": "LOW_LIQUIDITY",
+        "severity": "high",
+        "title": "Limited cash reserve",
+        "explanation": "Cash is below the illustrative emergency reserve target.",
+        "evidence": {
+          "cash_balance": "6000.00",
+          "monthly_expenses": "6000.00",
+          "coverage_months": "1.00",
+          "target_months": "6",
+          "target_gap": "30000.00"
+        }
+      },
+      {
+        "id": "F-STRUCTURING_PATTERN-0ce09011830c",
+        "code": "STRUCTURING_PATTERN",
+        "severity": "high",
+        "title": "Repeated cash movements near a review threshold",
+        "explanation": "A demo pattern for manual investigation; it does not establish evasion or wrongdoing.",
+        "evidence": {
+          "transaction_ids": [
+            "cash_0",
+            "cash_1",
+            "cash_2"
+          ],
+          "total_amount": "27000.03",
+          "lower_bound": "8000",
+          "upper_bound_exclusive": "10000",
+          "window_days": 7
+        }
+      },
+      {
+        "id": "F-TRANSACTION_VELOCITY-528d07c951d7",
+        "code": "TRANSACTION_VELOCITY",
+        "severity": "high",
+        "title": "Burst of recent outflows",
+        "explanation": "Outflow count reached the configured threshold within a short time window.",
+        "evidence": {
+          "transaction_ids": [
+            "burst_0",
+            "burst_1",
+            "burst_2",
+            "burst_3",
+            "burst_4",
+            "burst_5",
+            "burst_6",
+            "burst_7",
+            "cash_1"
+          ],
+          "count": 9,
+          "window_minutes": 60,
+          "start": "2026-09-28T14:00:00-04:00",
+          "end": "2026-09-29T02:07:00+08:00"
+        }
+      },
+      {
+        "id": "F-DUPLICATE_CHARGE-b2c04ca885fb",
+        "code": "DUPLICATE_CHARGE",
+        "severity": "medium",
+        "title": "Possible duplicate charges",
+        "explanation": "Equal charges to the same counterparty occurred within the configured window.",
+        "evidence": {
+          "transaction_ids": [
+            "burst_0",
+            "burst_1",
+            "burst_2",
+            "burst_3",
+            "burst_4",
+            "burst_5",
+            "burst_6",
+            "burst_7"
+          ],
+          "amount_each": "2500.00",
+          "counterparty": "Synthetic new merchant",
+          "window_minutes": 10
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-2aabff624b1b",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_0",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_0",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_0",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:00:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-3f7a5090b244",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_6",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_6",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_6",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:06:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-42b8db334b5c",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_2",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_2",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_2",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:02:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-4e66d34eab5d",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_2",
+          "date": "2026-09-29",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-50be2de8d189",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_7",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_7",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_7",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:07:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-528d07c951d7",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_1",
+          "date": "2026-09-28",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-57f006b5df30",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_0",
+          "date": "2026-09-27",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-7ba369cadca5",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_5",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_5",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_5",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:05:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-9e3de50cc576",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_1",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_1",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_1",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:01:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-ea992b16edb9",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_3",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_3",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_3",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:03:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-f4d34197257a",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_4",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_4",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_4",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:04:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-LIMITED_ANOMALY_BASELINE",
+        "code": "LIMITED_ANOMALY_BASELINE",
+        "severity": "info",
+        "title": "Statistical coverage is limited",
+        "explanation": "Some recent categories have fewer than 8 historical outflows, or no recent outflows exist. Absolute amount rules still apply; absence of a flag is inconclusive.",
+        "evidence": {
+          "eligible_categories": [
+            "groceries"
+          ],
+          "required_baseline_per_category": 8,
+          "recent_outflows": 19
+        }
+      }
+    ],
+    "raw_findings": [
+      {
+        "id": "F-INCOME_DROP",
+        "code": "INCOME_DROP",
+        "severity": "high",
+        "title": "Recorded income declined",
+        "explanation": "Income receipts declined between two complete covered months. Confirm coverage and timing.",
+        "evidence": {
+          "previous_month": "2026-08-01",
+          "latest_month": "2026-09-01",
+          "previous_income": "9000.00",
+          "latest_income": "4500.00",
+          "decline_fraction": "0.50",
+          "threshold": "0.30"
+        }
+      },
+      {
+        "id": "F-LOW_LIQUIDITY",
+        "code": "LOW_LIQUIDITY",
+        "severity": "high",
+        "title": "Limited cash reserve",
+        "explanation": "Cash is below the illustrative emergency reserve target.",
+        "evidence": {
+          "cash_balance": "6000.00",
+          "monthly_expenses": "6000.00",
+          "coverage_months": "1.00",
+          "target_months": "6",
+          "target_gap": "30000.00"
+        }
+      },
+      {
+        "id": "F-STRUCTURING_PATTERN-0ce09011830c",
+        "code": "STRUCTURING_PATTERN",
+        "severity": "high",
+        "title": "Repeated cash movements near a review threshold",
+        "explanation": "A demo pattern for manual investigation; it does not establish evasion or wrongdoing.",
+        "evidence": {
+          "transaction_ids": [
+            "cash_0",
+            "cash_1",
+            "cash_2"
+          ],
+          "total_amount": "27000.03",
+          "lower_bound": "8000",
+          "upper_bound_exclusive": "10000",
+          "window_days": 7
+        }
+      },
+      {
+        "id": "F-TRANSACTION_VELOCITY-528d07c951d7",
+        "code": "TRANSACTION_VELOCITY",
+        "severity": "high",
+        "title": "Burst of recent outflows",
+        "explanation": "Outflow count reached the configured threshold within a short time window.",
+        "evidence": {
+          "transaction_ids": [
+            "burst_0",
+            "burst_1",
+            "burst_2",
+            "burst_3",
+            "burst_4",
+            "burst_5",
+            "burst_6",
+            "burst_7",
+            "cash_1"
+          ],
+          "count": 9,
+          "window_minutes": 60,
+          "start": "2026-09-28T14:00:00-04:00",
+          "end": "2026-09-29T02:07:00+08:00"
+        }
+      },
+      {
+        "id": "F-DUPLICATE_CHARGE-b2c04ca885fb",
+        "code": "DUPLICATE_CHARGE",
+        "severity": "medium",
+        "title": "Possible duplicate charges",
+        "explanation": "Equal charges to the same counterparty occurred within the configured window.",
+        "evidence": {
+          "transaction_ids": [
+            "burst_0",
+            "burst_1",
+            "burst_2",
+            "burst_3",
+            "burst_4",
+            "burst_5",
+            "burst_6",
+            "burst_7"
+          ],
+          "amount_each": "2500.00",
+          "counterparty": "Synthetic new merchant",
+          "window_minutes": 10
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-2aabff624b1b",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_0",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_0",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_0",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:00:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-3f7a5090b244",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_6",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_6",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_6",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:06:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-42b8db334b5c",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_2",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_2",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_2",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:02:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-4e66d34eab5d",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_2",
+          "date": "2026-09-29",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-50be2de8d189",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_7",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_7",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_7",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:07:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-528d07c951d7",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_1",
+          "date": "2026-09-28",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-57f006b5df30",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_0",
+          "date": "2026-09-27",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-7ba369cadca5",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_5",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_5",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_5",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:05:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-9e3de50cc576",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_1",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_1",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_1",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:01:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-ea992b16edb9",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_3",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_3",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_3",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:03:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-f4d34197257a",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_4",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000",
+          "corroborating_signals": [
+            {
+              "code": "NEW_COUNTRY",
+              "evidence": {
+                "transaction_id": "burst_4",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "country": "SG",
+                "home_country": "US"
+              }
+            },
+            {
+              "code": "ODD_HOURS",
+              "evidence": {
+                "transaction_id": "burst_4",
+                "date": "2026-09-29",
+                "amount": "2500.00",
+                "category": "electronics",
+                "counterparty": "Synthetic new merchant",
+                "timestamp": "2026-09-29T02:04:00+08:00"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "F-LIMITED_ANOMALY_BASELINE",
+        "code": "LIMITED_ANOMALY_BASELINE",
+        "severity": "info",
+        "title": "Statistical coverage is limited",
+        "explanation": "Some recent categories have fewer than 8 historical outflows, or no recent outflows exist. Absolute amount rules still apply; absence of a flag is inconclusive.",
+        "evidence": {
+          "eligible_categories": [
+            "groceries"
+          ],
+          "required_baseline_per_category": 8,
+          "recent_outflows": 19
+        }
+      }
+    ],
+    "detector_signals": [
+      {
+        "id": "F-INCOME_DROP",
+        "code": "INCOME_DROP",
+        "severity": "high",
+        "title": "Recorded income declined",
+        "explanation": "Income receipts declined between two complete covered months. Confirm coverage and timing.",
+        "evidence": {
+          "previous_month": "2026-08-01",
+          "latest_month": "2026-09-01",
+          "previous_income": "9000.00",
+          "latest_income": "4500.00",
+          "decline_fraction": "0.50",
+          "threshold": "0.30"
+        }
+      },
+      {
+        "id": "F-LOW_LIQUIDITY",
+        "code": "LOW_LIQUIDITY",
+        "severity": "high",
+        "title": "Limited cash reserve",
+        "explanation": "Cash is below the illustrative emergency reserve target.",
+        "evidence": {
+          "cash_balance": "6000.00",
+          "monthly_expenses": "6000.00",
+          "coverage_months": "1.00",
+          "target_months": "6",
+          "target_gap": "30000.00"
+        }
+      },
+      {
+        "id": "F-STRUCTURING_PATTERN-0ce09011830c",
+        "code": "STRUCTURING_PATTERN",
+        "severity": "high",
+        "title": "Repeated cash movements near a review threshold",
+        "explanation": "A demo pattern for manual investigation; it does not establish evasion or wrongdoing.",
+        "evidence": {
+          "transaction_ids": [
+            "cash_0",
+            "cash_1",
+            "cash_2"
+          ],
+          "total_amount": "27000.03",
+          "lower_bound": "8000",
+          "upper_bound_exclusive": "10000",
+          "window_days": 7
+        }
+      },
+      {
+        "id": "F-TRANSACTION_VELOCITY-528d07c951d7",
+        "code": "TRANSACTION_VELOCITY",
+        "severity": "high",
+        "title": "Burst of recent outflows",
+        "explanation": "Outflow count reached the configured threshold within a short time window.",
+        "evidence": {
+          "transaction_ids": [
+            "burst_0",
+            "burst_1",
+            "burst_2",
+            "burst_3",
+            "burst_4",
+            "burst_5",
+            "burst_6",
+            "burst_7",
+            "cash_1"
+          ],
+          "count": 9,
+          "window_minutes": 60,
+          "start": "2026-09-28T14:00:00-04:00",
+          "end": "2026-09-29T02:07:00+08:00"
+        }
+      },
+      {
+        "id": "F-DUPLICATE_CHARGE-b2c04ca885fb",
+        "code": "DUPLICATE_CHARGE",
+        "severity": "medium",
+        "title": "Possible duplicate charges",
+        "explanation": "Equal charges to the same counterparty occurred within the configured window.",
+        "evidence": {
+          "transaction_ids": [
+            "burst_0",
+            "burst_1",
+            "burst_2",
+            "burst_3",
+            "burst_4",
+            "burst_5",
+            "burst_6",
+            "burst_7"
+          ],
+          "amount_each": "2500.00",
+          "counterparty": "Synthetic new merchant",
+          "window_minutes": 10
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-2aabff624b1b",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_0",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-3f7a5090b244",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_6",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-42b8db334b5c",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_2",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-4e66d34eab5d",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_2",
+          "date": "2026-09-29",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-50be2de8d189",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_7",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-528d07c951d7",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_1",
+          "date": "2026-09-28",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-57f006b5df30",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "cash_0",
+          "date": "2026-09-27",
+          "amount": "9000.01",
+          "category": "cash",
+          "counterparty": "Synthetic ATM",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-7ba369cadca5",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_5",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-9e3de50cc576",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_1",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-ea992b16edb9",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_3",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTERPARTY-f4d34197257a",
+        "code": "NEW_COUNTERPARTY",
+        "severity": "medium",
+        "title": "First high-value outflow to a counterparty",
+        "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+        "evidence": {
+          "transaction_id": "burst_4",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "minimum_amount": "2000"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-2aabff624b1b",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_0",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-3f7a5090b244",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_6",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-42b8db334b5c",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_2",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-50be2de8d189",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_7",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-7ba369cadca5",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_5",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-9e3de50cc576",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_1",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-ea992b16edb9",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_3",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-NEW_COUNTRY-f4d34197257a",
+        "code": "NEW_COUNTRY",
+        "severity": "medium",
+        "title": "High-value outflow in a new country",
+        "explanation": "The country differs from the client's home country and earlier observed activity.",
+        "evidence": {
+          "transaction_id": "burst_4",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "country": "SG",
+          "home_country": "US"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-2aabff624b1b",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_0",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:00:00+08:00"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-3f7a5090b244",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_6",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:06:00+08:00"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-42b8db334b5c",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_2",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:02:00+08:00"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-50be2de8d189",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_7",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:07:00+08:00"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-7ba369cadca5",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_5",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:05:00+08:00"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-9e3de50cc576",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_1",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:01:00+08:00"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-ea992b16edb9",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_3",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:03:00+08:00"
+        }
+      },
+      {
+        "id": "F-ODD_HOURS-f4d34197257a",
+        "code": "ODD_HOURS",
+        "severity": "medium",
+        "title": "Large outflow during overnight hours",
+        "explanation": "The supplied timestamp is between 01:00 and 05:00 in its recorded offset.",
+        "evidence": {
+          "transaction_id": "burst_4",
+          "date": "2026-09-29",
+          "amount": "2500.00",
+          "category": "electronics",
+          "counterparty": "Synthetic new merchant",
+          "timestamp": "2026-09-29T02:04:00+08:00"
+        }
+      },
+      {
+        "id": "F-LIMITED_ANOMALY_BASELINE",
+        "code": "LIMITED_ANOMALY_BASELINE",
+        "severity": "info",
+        "title": "Statistical coverage is limited",
+        "explanation": "Some recent categories have fewer than 8 historical outflows, or no recent outflows exist. Absolute amount rules still apply; absence of a flag is inconclusive.",
+        "evidence": {
+          "eligible_categories": [
+            "groceries"
+          ],
+          "required_baseline_per_category": 8,
+          "recent_outflows": 19
+        }
+      }
+    ],
+    "suppressed_findings": [],
+    "feedback_events": [],
+    "recurring_finding_ids": [],
+    "review_priority": {
+      "score": 81,
+      "band": "high",
+      "calibrated": false,
+      "meaning": "Heuristic review priority; not a probability or investment risk rating."
+    },
+    "original_review_priority": {
+      "score": 81,
+      "band": "high",
+      "calibrated": false,
+      "meaning": "Heuristic review priority; not a probability or investment risk rating."
+    },
+    "policy_id": "5972287500e8a883436f3441a9033f01c1a334f71da904ccf2bf4414a9177927",
+    "configuration": {
+      "analysis": {
+        "version": "2026-10-demo-v2",
+        "minimum_baseline": 8,
+        "absolute_outflow": "10000",
+        "minimum_spike": "500",
+        "spike_ratio": "4",
+        "robust_z": "6",
+        "spending_growth": "0.50",
+        "minimum_spending_increase": "500",
+        "emergency_months": "6",
+        "critical_cash_months": "3",
+        "single_asset_limit": "0.40",
+        "profile_max_age_days": 180,
+        "conservative_equity_limit": "0.40",
+        "moderate_equity_limit": "0.65",
+        "aggressive_equity_limit": "0.85",
+        "short_horizon_years": 3,
+        "short_horizon_equity_limit": "0.40",
+        "recent_days": 30,
+        "baseline_days": 90,
+        "net_worth_decline": "0.20",
+        "new_counterparty_minimum": "2000",
+        "income_drop_fraction": "0.30",
+        "duplicate_window_minutes": 10,
+        "velocity_count": 8,
+        "velocity_window_minutes": 60,
+        "odd_hours_minimum": "1000",
+        "foreign_minimum": "2000",
+        "structuring_minimum": "8000",
+        "structuring_maximum": "10000",
+        "structuring_count": 3,
+        "structuring_window_days": 7
+      },
+      "tools": {
+        "max_attempts": 3,
+        "backoff_seconds": 0.05,
+        "deadline_seconds": 10.0,
+        "circuit_threshold": 4,
+        "circuit_cooldown_seconds": 30.0
+      },
+      "review": {
+        "feedback_ttl_days": 90
+      },
+      "crm": {
+        "cache_max_age_days": 30,
+        "timeout_seconds": 2.0
+      },
+      "narrative": {
+        "enabled": false,
+        "model": "claude-haiku-4-5",
+        "timeout_seconds": 5.0,
+        "max_tokens": 256
+      },
+      "enabled_checks": null,
+      "ingestion_mode": "lenient",
+      "max_in_flight": 4
+    },
+    "data_quality": {
+      "mode": "lenient",
+      "score": "1.000",
+      "issues": [],
+      "records_dropped": 0,
+      "records_total": 41
+    },
+    "executed_checks": [
+      "liquidity",
+      "cash_flow",
+      "balance_sheet",
+      "concentration",
+      "crm_context",
+      "suitability",
+      "baseline_coverage",
+      "large_outflows",
+      "statistical_outflows",
+      "spending_growth",
+      "new_counterparty",
+      "income_drop",
+      "duplicate_charges",
+      "transaction_velocity",
+      "odd_hours",
+      "foreign_activity",
+      "structuring_pattern"
+    ],
+    "skipped_checks": [
+      {
+        "check": "historical_comparison",
+        "reason": "missing_inputs: history"
+      }
+    ],
+    "failed_checks": [],
+    "narrative": {
+      "text": "Recorded net worth is USD 106,000.00. Cash covers 1.00 months of declared expenses. Review priority is 81/100 (high), an uncalibrated triage heuristic. Recorded income declined. Income receipts declined between two complete covered months. Confirm coverage and timing. Limited cash reserve. Cash is below the illustrative emergency reserve target. Repeated cash movements near a review threshold. A demo pattern for manual investigation; it does not establish evasion or wrongdoing. Proposed next step: Confirm income receipt timing and review whether the monthly budget needs updating. Signals request verification and do not establish wrongdoing. Recommendations remain a draft awaiting human approval.",
+      "source": "template",
+      "sentences": [
+        {
+          "text": "Recorded net worth is USD 106,000.00.",
+          "citations": [
+            "metrics.net_worth"
+          ]
+        },
+        {
+          "text": "Cash covers 1.00 months of declared expenses.",
+          "citations": [
+            "metrics.cash_runway_months"
+          ]
+        },
+        {
+          "text": "Review priority is 81/100 (high), an uncalibrated triage heuristic.",
+          "citations": [
+            "review_priority"
+          ]
+        },
+        {
+          "text": "Recorded income declined. Income receipts declined between two complete covered months. Confirm coverage and timing.",
+          "citations": [
+            "F-INCOME_DROP"
+          ]
+        },
+        {
+          "text": "Limited cash reserve. Cash is below the illustrative emergency reserve target.",
+          "citations": [
+            "F-LOW_LIQUIDITY"
+          ]
+        },
+        {
+          "text": "Repeated cash movements near a review threshold. A demo pattern for manual investigation; it does not establish evasion or wrongdoing.",
+          "citations": [
+            "F-STRUCTURING_PATTERN-0ce09011830c"
+          ]
+        },
+        {
+          "text": "Proposed next step: Confirm income receipt timing and review whether the monthly budget needs updating.",
+          "citations": [
+            "A-INCOME_DROP"
+          ]
+        },
+        {
+          "text": "Signals request verification and do not establish wrongdoing.",
+          "citations": []
+        },
+        {
+          "text": "Recommendations remain a draft awaiting human approval.",
+          "citations": [
+            "status"
+          ]
+        }
+      ],
+      "selected_finding_ids": [
+        "F-INCOME_DROP",
+        "F-LOW_LIQUIDITY",
+        "F-STRUCTURING_PATTERN-0ce09011830c"
+      ]
+    },
+    "tool_calls": [
+      {
+        "agent": "data_fetcher",
+        "tool": "financial.prepare",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 2.85,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "crm.profile",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.21,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.crm.save",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 9.06,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.history",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.36,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.feedback",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.23,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.prepare",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.09,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.catalog",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.02,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.scan",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.32,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "advisor",
+        "tool": "narrative.template",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.07,
+        "error_code": null,
+        "error_kind": null
+      }
+    ],
+    "actions": [
+      {
+        "id": "A-INCOME_DROP",
+        "finding_ids": [
+          "F-INCOME_DROP"
+        ],
+        "priority": "high",
+        "instruction": "Confirm income receipt timing and review whether the monthly budget needs updating.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-LOW_LIQUIDITY",
+        "finding_ids": [
+          "F-LOW_LIQUIDITY"
+        ],
+        "priority": "high",
+        "instruction": "Confirm near-term cash needs and discuss a staged reserve plan with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-STRUCTURING_PATTERN-0ce09011830c",
+        "finding_ids": [
+          "F-STRUCTURING_PATTERN-0ce09011830c"
+        ],
+        "priority": "high",
+        "instruction": "Review the related cash movements and supporting records with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-TRANSACTION_VELOCITY-528d07c951d7",
+        "finding_ids": [
+          "F-TRANSACTION_VELOCITY-528d07c951d7"
+        ],
+        "priority": "high",
+        "instruction": "Confirm whether the burst of outflows reflects planned activity.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-DUPLICATE_CHARGE-b2c04ca885fb",
+        "finding_ids": [
+          "F-DUPLICATE_CHARGE-b2c04ca885fb"
+        ],
+        "priority": "medium",
+        "instruction": "Reconcile the equal charges against receipts before requesting a correction.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-2aabff624b1b",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-2aabff624b1b"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-3f7a5090b244",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-3f7a5090b244"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-42b8db334b5c",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-42b8db334b5c"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-4e66d34eab5d",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-4e66d34eab5d"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-50be2de8d189",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-50be2de8d189"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-528d07c951d7",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-528d07c951d7"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-57f006b5df30",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-57f006b5df30"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-7ba369cadca5",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-7ba369cadca5"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-9e3de50cc576",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-9e3de50cc576"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-ea992b16edb9",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-ea992b16edb9"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-NEW_COUNTERPARTY-f4d34197257a",
+        "finding_ids": [
+          "F-NEW_COUNTERPARTY-f4d34197257a"
+        ],
+        "priority": "medium",
+        "instruction": "Confirm the new counterparty and the purpose of the payment with the client.",
+        "requires_human_review": true
+      },
+      {
+        "id": "A-LIMITED_ANOMALY_BASELINE",
+        "finding_ids": [
+          "F-LIMITED_ANOMALY_BASELINE"
+        ],
+        "priority": "info",
+        "instruction": "Collect more categorized transaction history to improve coverage.",
+        "requires_human_review": true
+      }
+    ],
+    "reviewed_actions": [],
+    "guardrails": {
+      "human_review_required": true,
+      "portfolio_discussion_allowed": true
+    },
+    "sources": {
+      "financial_data": "provided_json",
+      "crm_available": true,
+      "crm_source": "fresh",
+      "crm_profile": {
+        "client_id": "activity_demo",
+        "risk_tolerance": "moderate",
+        "investment_horizon_years": 8,
+        "kyc_status": "verified",
+        "updated_at": "2026-08-15"
+      },
+      "history_run_ids": []
+    },
+    "warnings": [],
+    "events": [
+      {
+        "agent": "data_fetcher",
+        "status": "completed",
+        "duration_ms": 12.75
+      },
+      {
+        "agent": "analyzer",
+        "status": "completed",
+        "duration_ms": 0.56
+      },
+      {
+        "agent": "advisor",
+        "status": "completed",
+        "duration_ms": 0.78
+      }
+    ],
+    "review": null,
+    "memory_persisted": true
+  },
+  "import_repairs": {
+    "schema_version": "1.1",
+    "run_id": "b7a79af3-f165-41d3-86be-267e4514e6a4",
+    "created_at": "2026-10-15T04:58:42.155463+00:00",
+    "client_id": "import_demo",
+    "as_of": "2026-10-01",
+    "currency": "USD",
+    "status": "pending_review",
+    "execution_status": "degraded",
+    "advisory_release_allowed": false,
+    "reasoning_mode": "deterministic_policy",
+    "summary": {
+      "finding_count": 0,
+      "high_severity_count": 0,
+      "action_count": 0
+    },
+    "metrics": {
+      "currency": "USD",
+      "total_assets": "160000.00",
+      "invested_assets": "100000.00",
+      "total_liabilities": "0.00",
+      "net_worth": "160000.00",
+      "declared_monthly_surplus": "3000.00",
+      "cash_runway_months": "10.00",
+      "equity_share_of_investments": "0.60",
+      "transaction_count": 27,
+      "policy": {
+        "version": "2026-10-demo-v2",
+        "minimum_baseline": 8,
+        "absolute_outflow": "10000",
+        "minimum_spike": "500",
+        "spike_ratio": "4",
+        "robust_z": "6",
+        "spending_growth": "0.50",
+        "minimum_spending_increase": "500",
+        "emergency_months": "6",
+        "critical_cash_months": "3",
+        "single_asset_limit": "0.40",
+        "profile_max_age_days": 180,
+        "conservative_equity_limit": "0.40",
+        "moderate_equity_limit": "0.65",
+        "aggressive_equity_limit": "0.85",
+        "short_horizon_years": 3,
+        "short_horizon_equity_limit": "0.40",
+        "recent_days": 30,
+        "baseline_days": 90,
+        "net_worth_decline": "0.20",
+        "new_counterparty_minimum": "2000",
+        "income_drop_fraction": "0.30",
+        "duplicate_window_minutes": 10,
+        "velocity_count": 8,
+        "velocity_window_minutes": 60,
+        "odd_hours_minimum": "1000",
+        "foreign_minimum": "2000",
+        "structuring_minimum": "8000",
+        "structuring_maximum": "10000",
+        "structuring_count": 3,
+        "structuring_window_days": 7
+      },
+      "anomaly_coverage": {
+        "baseline_start": "2026-07-01",
+        "baseline_end": "2026-08-31",
+        "recent_start": "2026-09-01",
+        "recent_end": "2026-10-01",
+        "baseline_outflows": 16,
+        "recent_outflows": 8,
+        "eligible_categories": [
+          "groceries"
+        ]
+      },
+      "spending_comparison": {
+        "available": true,
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "latest_end": "2026-09-30"
+      }
+    },
+    "findings": [],
+    "raw_findings": [],
+    "detector_signals": [],
+    "suppressed_findings": [],
+    "feedback_events": [],
+    "recurring_finding_ids": [],
+    "review_priority": {
+      "score": 0,
+      "band": "low",
+      "calibrated": false,
+      "meaning": "Heuristic review priority; not a probability or investment risk rating."
+    },
+    "original_review_priority": {
+      "score": 0,
+      "band": "low",
+      "calibrated": false,
+      "meaning": "Heuristic review priority; not a probability or investment risk rating."
+    },
+    "policy_id": "5972287500e8a883436f3441a9033f01c1a334f71da904ccf2bf4414a9177927",
+    "configuration": {
+      "analysis": {
+        "version": "2026-10-demo-v2",
+        "minimum_baseline": 8,
+        "absolute_outflow": "10000",
+        "minimum_spike": "500",
+        "spike_ratio": "4",
+        "robust_z": "6",
+        "spending_growth": "0.50",
+        "minimum_spending_increase": "500",
+        "emergency_months": "6",
+        "critical_cash_months": "3",
+        "single_asset_limit": "0.40",
+        "profile_max_age_days": 180,
+        "conservative_equity_limit": "0.40",
+        "moderate_equity_limit": "0.65",
+        "aggressive_equity_limit": "0.85",
+        "short_horizon_years": 3,
+        "short_horizon_equity_limit": "0.40",
+        "recent_days": 30,
+        "baseline_days": 90,
+        "net_worth_decline": "0.20",
+        "new_counterparty_minimum": "2000",
+        "income_drop_fraction": "0.30",
+        "duplicate_window_minutes": 10,
+        "velocity_count": 8,
+        "velocity_window_minutes": 60,
+        "odd_hours_minimum": "1000",
+        "foreign_minimum": "2000",
+        "structuring_minimum": "8000",
+        "structuring_maximum": "10000",
+        "structuring_count": 3,
+        "structuring_window_days": 7
+      },
+      "tools": {
+        "max_attempts": 3,
+        "backoff_seconds": 0.05,
+        "deadline_seconds": 10.0,
+        "circuit_threshold": 4,
+        "circuit_cooldown_seconds": 30.0
+      },
+      "review": {
+        "feedback_ttl_days": 90
+      },
+      "crm": {
+        "cache_max_age_days": 30,
+        "timeout_seconds": 2.0
+      },
+      "narrative": {
+        "enabled": false,
+        "model": "claude-haiku-4-5",
+        "timeout_seconds": 5.0,
+        "max_tokens": 256
+      },
+      "enabled_checks": null,
+      "ingestion_mode": "lenient",
+      "max_in_flight": 4
+    },
+    "data_quality": {
+      "mode": "lenient",
+      "score": "0.906",
+      "issues": [
+        {
+          "field": "cash_balance",
+          "action": "normalized",
+          "reason": "thousands_separator"
+        },
+        {
+          "field": "transactions[1].category",
+          "action": "defaulted",
+          "reason": "missing_nonfinancial_label"
+        },
+        {
+          "field": "transactions[27].category",
+          "action": "defaulted",
+          "reason": "missing_nonfinancial_label"
+        },
+        {
+          "field": "transactions[27].counterparty",
+          "action": "defaulted",
+          "reason": "missing_nonfinancial_label"
+        },
+        {
+          "field": "transactions[27]",
+          "action": "dropped",
+          "reason": "invalid_transaction"
+        },
+        {
+          "field": "transactions[28]",
+          "action": "deduplicated",
+          "reason": "identical_record"
+        }
+      ],
+      "records_dropped": 2,
+      "records_total": 32
+    },
+    "executed_checks": [
+      "liquidity",
+      "cash_flow",
+      "balance_sheet",
+      "concentration",
+      "crm_context",
+      "suitability",
+      "baseline_coverage",
+      "large_outflows",
+      "statistical_outflows",
+      "spending_growth",
+      "new_counterparty",
+      "income_drop",
+      "duplicate_charges",
+      "transaction_velocity",
+      "odd_hours",
+      "foreign_activity",
+      "structuring_pattern"
+    ],
+    "skipped_checks": [
+      {
+        "check": "historical_comparison",
+        "reason": "missing_inputs: history"
+      }
+    ],
+    "failed_checks": [],
+    "narrative": {
+      "text": "Recorded net worth is USD 160,000.00. Cash covers 10.00 months of declared expenses. Review priority is 0/100 (low), an uncalibrated triage heuristic. Some inputs or checks were limited; inspect the coverage and warnings before making decisions. Signals request verification and do not establish wrongdoing. Recommendations remain a draft awaiting human approval.",
+      "source": "template",
+      "sentences": [
+        {
+          "text": "Recorded net worth is USD 160,000.00.",
+          "citations": [
+            "metrics.net_worth"
+          ]
+        },
+        {
+          "text": "Cash covers 10.00 months of declared expenses.",
+          "citations": [
+            "metrics.cash_runway_months"
+          ]
+        },
+        {
+          "text": "Review priority is 0/100 (low), an uncalibrated triage heuristic.",
+          "citations": [
+            "review_priority"
+          ]
+        },
+        {
+          "text": "Some inputs or checks were limited; inspect the coverage and warnings before making decisions.",
+          "citations": [
+            "warnings",
+            "skipped_checks"
+          ]
+        },
+        {
+          "text": "Signals request verification and do not establish wrongdoing.",
+          "citations": []
+        },
+        {
+          "text": "Recommendations remain a draft awaiting human approval.",
+          "citations": [
+            "status"
+          ]
+        }
+      ],
+      "selected_finding_ids": []
+    },
+    "tool_calls": [
+      {
+        "agent": "data_fetcher",
+        "tool": "financial.prepare",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 1.74,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "crm.profile",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.14,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.crm.save",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 7.42,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.history",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.32,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "data_fetcher",
+        "tool": "memory.feedback",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.22,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.prepare",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.09,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.catalog",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.02,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "analyzer",
+        "tool": "analytics.scan",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.14,
+        "error_code": null,
+        "error_kind": null
+      },
+      {
+        "agent": "advisor",
+        "tool": "narrative.template",
+        "ok": true,
+        "attempts": 1,
+        "duration_ms": 0.02,
+        "error_code": null,
+        "error_kind": null
+      }
+    ],
+    "actions": [],
+    "reviewed_actions": [],
+    "guardrails": {
+      "human_review_required": true,
+      "portfolio_discussion_allowed": false
+    },
+    "sources": {
+      "financial_data": "provided_json",
+      "crm_available": true,
+      "crm_source": "fresh",
+      "crm_profile": {
+        "client_id": "import_demo",
+        "risk_tolerance": "moderate",
+        "investment_horizon_years": 8,
+        "kyc_status": "verified",
+        "updated_at": "2026-08-15"
+      },
+      "history_run_ids": []
+    },
+    "warnings": [
+      "Input records were repaired or dropped; inspect data_quality before review."
+    ],
+    "events": [
+      {
+        "agent": "data_fetcher",
+        "status": "completed",
+        "duration_ms": 9.89
+      },
+      {
+        "agent": "analyzer",
+        "status": "completed",
+        "duration_ms": 0.37
+      },
+      {
+        "agent": "advisor",
+        "status": "completed",
+        "duration_ms": 0.04
+      }
+    ],
+    "review": null,
+    "memory_persisted": true
+  }
+}

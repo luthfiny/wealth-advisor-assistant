@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.0",
-  "run_id": "f97b2c2c-a73a-4a63-8c7b-3ef1b0ca7284",
-  "created_at": "2026-10-15T03:36:34.853879+00:00",
+  "schema_version": "1.1",
+  "run_id": "09a73662-9745-4326-badd-f7bcce1c39ad",
+  "created_at": "2026-10-15T04:58:41.596993+00:00",
   "client_id": "client_demo_001",
   "as_of": "2026-10-01",
   "currency": "USD",
@@ -25,7 +25,7 @@
     "equity_share_of_investments": "0.90",
     "transaction_count": 32,
     "policy": {
-      "version": "2026-10-demo-v1",
+      "version": "2026-10-demo-v2",
       "minimum_baseline": 8,
       "absolute_outflow": "10000",
       "minimum_spike": "500",
@@ -44,7 +44,18 @@
       "short_horizon_equity_limit": "0.40",
       "recent_days": 30,
       "baseline_days": 90,
-      "net_worth_decline": "0.20"
+      "net_worth_decline": "0.20",
+      "new_counterparty_minimum": "2000",
+      "income_drop_fraction": "0.30",
+      "duplicate_window_minutes": 10,
+      "velocity_count": 8,
+      "velocity_window_minutes": 60,
+      "odd_hours_minimum": "1000",
+      "foreign_minimum": "2000",
+      "structuring_minimum": "8000",
+      "structuring_maximum": "10000",
+      "structuring_count": 3,
+      "structuring_window_days": 7
     },
     "anomaly_coverage": {
       "baseline_start": "2026-07-01",
@@ -76,7 +87,20 @@
         "date": "2026-09-26",
         "amount": "15000.00",
         "category": "external_transfer",
-        "threshold": "10000"
+        "threshold": "10000",
+        "corroborating_signals": [
+          {
+            "code": "NEW_COUNTERPARTY",
+            "evidence": {
+              "transaction_id": "sep_wire",
+              "date": "2026-09-26",
+              "amount": "15000.00",
+              "category": "external_transfer",
+              "counterparty": "Demo Recipient",
+              "minimum_amount": "2000"
+            }
+          }
+        ]
       }
     },
     {
@@ -181,6 +205,540 @@
         "required_baseline_per_category": 8,
         "recent_outflows": 7
       }
+    }
+  ],
+  "raw_findings": [
+    {
+      "id": "F-LARGE_OUTFLOW-2e6c8b04aff4",
+      "code": "LARGE_OUTFLOW",
+      "severity": "high",
+      "title": "Large recent outflow",
+      "explanation": "The outflow exceeds the demo's absolute review threshold; confirm its purpose.",
+      "evidence": {
+        "transaction_id": "sep_wire",
+        "date": "2026-09-26",
+        "amount": "15000.00",
+        "category": "external_transfer",
+        "threshold": "10000",
+        "corroborating_signals": [
+          {
+            "code": "NEW_COUNTERPARTY",
+            "evidence": {
+              "transaction_id": "sep_wire",
+              "date": "2026-09-26",
+              "amount": "15000.00",
+              "category": "external_transfer",
+              "counterparty": "Demo Recipient",
+              "minimum_amount": "2000"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "F-LOW_LIQUIDITY",
+      "code": "LOW_LIQUIDITY",
+      "severity": "high",
+      "title": "Limited cash reserve",
+      "explanation": "Cash is below the illustrative emergency reserve target.",
+      "evidence": {
+        "cash_balance": "12000.00",
+        "monthly_expenses": "6000.00",
+        "coverage_months": "2.00",
+        "target_months": "6",
+        "target_gap": "24000.00"
+      }
+    },
+    {
+      "id": "F-RISK_PROFILE_MISMATCH",
+      "code": "RISK_PROFILE_MISMATCH",
+      "severity": "high",
+      "title": "Equity exposure merits suitability review",
+      "explanation": "Equity exposure exceeds the demo limit for the recorded risk profile and horizon.",
+      "evidence": {
+        "risk_tolerance": "moderate",
+        "investment_horizon_years": 8,
+        "equity_share": "0.90",
+        "limit": "0.65"
+      }
+    },
+    {
+      "id": "F-SINGLE_ASSET_CONCENTRATION-9b5b44320d01",
+      "code": "SINGLE_ASSET_CONCENTRATION",
+      "severity": "high",
+      "title": "Investment concentration",
+      "explanation": "One recorded asset exceeds the illustrative concentration threshold.",
+      "evidence": {
+        "asset_id": "TECH_FUND",
+        "market_value": "140000.00",
+        "share_of_investments": "0.70",
+        "limit": "0.40"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-121db83be141",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "groceries",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "800.00",
+        "latest_amount": "2100.00",
+        "increase": "1300.00",
+        "growth_fraction": "1.62"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-6e3552347443",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "dining",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "400.00",
+        "latest_amount": "1200.00",
+        "increase": "800.00",
+        "growth_fraction": "2.00"
+      }
+    },
+    {
+      "id": "F-UNUSUAL_TRANSACTION-a1bf8659e27e",
+      "code": "UNUSUAL_TRANSACTION",
+      "severity": "medium",
+      "title": "Unusual transaction amount",
+      "explanation": "The outflow exceeds both its category's robust historical band and ratio guard.",
+      "evidence": {
+        "transaction_id": "sep_spike",
+        "date": "2026-09-22",
+        "amount": "1800.00",
+        "category": "groceries",
+        "baseline_count": 16,
+        "median": "100.00",
+        "median_absolute_deviation": "2.50",
+        "threshold": "500.00"
+      }
+    },
+    {
+      "id": "F-LIMITED_ANOMALY_BASELINE",
+      "code": "LIMITED_ANOMALY_BASELINE",
+      "severity": "info",
+      "title": "Statistical coverage is limited",
+      "explanation": "Some recent categories have fewer than 8 historical outflows, or no recent outflows exist. Absolute amount rules still apply; absence of a flag is inconclusive.",
+      "evidence": {
+        "eligible_categories": [
+          "groceries"
+        ],
+        "required_baseline_per_category": 8,
+        "recent_outflows": 7
+      }
+    }
+  ],
+  "detector_signals": [
+    {
+      "id": "F-LARGE_OUTFLOW-2e6c8b04aff4",
+      "code": "LARGE_OUTFLOW",
+      "severity": "high",
+      "title": "Large recent outflow",
+      "explanation": "The outflow exceeds the demo's absolute review threshold; confirm its purpose.",
+      "evidence": {
+        "transaction_id": "sep_wire",
+        "date": "2026-09-26",
+        "amount": "15000.00",
+        "category": "external_transfer",
+        "threshold": "10000"
+      }
+    },
+    {
+      "id": "F-LOW_LIQUIDITY",
+      "code": "LOW_LIQUIDITY",
+      "severity": "high",
+      "title": "Limited cash reserve",
+      "explanation": "Cash is below the illustrative emergency reserve target.",
+      "evidence": {
+        "cash_balance": "12000.00",
+        "monthly_expenses": "6000.00",
+        "coverage_months": "2.00",
+        "target_months": "6",
+        "target_gap": "24000.00"
+      }
+    },
+    {
+      "id": "F-RISK_PROFILE_MISMATCH",
+      "code": "RISK_PROFILE_MISMATCH",
+      "severity": "high",
+      "title": "Equity exposure merits suitability review",
+      "explanation": "Equity exposure exceeds the demo limit for the recorded risk profile and horizon.",
+      "evidence": {
+        "risk_tolerance": "moderate",
+        "investment_horizon_years": 8,
+        "equity_share": "0.90",
+        "limit": "0.65"
+      }
+    },
+    {
+      "id": "F-SINGLE_ASSET_CONCENTRATION-9b5b44320d01",
+      "code": "SINGLE_ASSET_CONCENTRATION",
+      "severity": "high",
+      "title": "Investment concentration",
+      "explanation": "One recorded asset exceeds the illustrative concentration threshold.",
+      "evidence": {
+        "asset_id": "TECH_FUND",
+        "market_value": "140000.00",
+        "share_of_investments": "0.70",
+        "limit": "0.40"
+      }
+    },
+    {
+      "id": "F-NEW_COUNTERPARTY-2e6c8b04aff4",
+      "code": "NEW_COUNTERPARTY",
+      "severity": "medium",
+      "title": "First high-value outflow to a counterparty",
+      "explanation": "The counterparty is absent from the earlier outflow baseline; confirm purpose.",
+      "evidence": {
+        "transaction_id": "sep_wire",
+        "date": "2026-09-26",
+        "amount": "15000.00",
+        "category": "external_transfer",
+        "counterparty": "Demo Recipient",
+        "minimum_amount": "2000"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-121db83be141",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "groceries",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "800.00",
+        "latest_amount": "2100.00",
+        "increase": "1300.00",
+        "growth_fraction": "1.62"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-6e3552347443",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "dining",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "400.00",
+        "latest_amount": "1200.00",
+        "increase": "800.00",
+        "growth_fraction": "2.00"
+      }
+    },
+    {
+      "id": "F-UNUSUAL_TRANSACTION-a1bf8659e27e",
+      "code": "UNUSUAL_TRANSACTION",
+      "severity": "medium",
+      "title": "Unusual transaction amount",
+      "explanation": "The outflow exceeds both its category's robust historical band and ratio guard.",
+      "evidence": {
+        "transaction_id": "sep_spike",
+        "date": "2026-09-22",
+        "amount": "1800.00",
+        "category": "groceries",
+        "baseline_count": 16,
+        "median": "100.00",
+        "median_absolute_deviation": "2.50",
+        "threshold": "500.00"
+      }
+    },
+    {
+      "id": "F-LIMITED_ANOMALY_BASELINE",
+      "code": "LIMITED_ANOMALY_BASELINE",
+      "severity": "info",
+      "title": "Statistical coverage is limited",
+      "explanation": "Some recent categories have fewer than 8 historical outflows, or no recent outflows exist. Absolute amount rules still apply; absence of a flag is inconclusive.",
+      "evidence": {
+        "eligible_categories": [
+          "groceries"
+        ],
+        "required_baseline_per_category": 8,
+        "recent_outflows": 7
+      }
+    }
+  ],
+  "suppressed_findings": [],
+  "feedback_events": [],
+  "recurring_finding_ids": [],
+  "review_priority": {
+    "score": 60,
+    "band": "elevated",
+    "calibrated": false,
+    "meaning": "Heuristic review priority; not a probability or investment risk rating."
+  },
+  "original_review_priority": {
+    "score": 60,
+    "band": "elevated",
+    "calibrated": false,
+    "meaning": "Heuristic review priority; not a probability or investment risk rating."
+  },
+  "policy_id": "5972287500e8a883436f3441a9033f01c1a334f71da904ccf2bf4414a9177927",
+  "configuration": {
+    "analysis": {
+      "version": "2026-10-demo-v2",
+      "minimum_baseline": 8,
+      "absolute_outflow": "10000",
+      "minimum_spike": "500",
+      "spike_ratio": "4",
+      "robust_z": "6",
+      "spending_growth": "0.50",
+      "minimum_spending_increase": "500",
+      "emergency_months": "6",
+      "critical_cash_months": "3",
+      "single_asset_limit": "0.40",
+      "profile_max_age_days": 180,
+      "conservative_equity_limit": "0.40",
+      "moderate_equity_limit": "0.65",
+      "aggressive_equity_limit": "0.85",
+      "short_horizon_years": 3,
+      "short_horizon_equity_limit": "0.40",
+      "recent_days": 30,
+      "baseline_days": 90,
+      "net_worth_decline": "0.20",
+      "new_counterparty_minimum": "2000",
+      "income_drop_fraction": "0.30",
+      "duplicate_window_minutes": 10,
+      "velocity_count": 8,
+      "velocity_window_minutes": 60,
+      "odd_hours_minimum": "1000",
+      "foreign_minimum": "2000",
+      "structuring_minimum": "8000",
+      "structuring_maximum": "10000",
+      "structuring_count": 3,
+      "structuring_window_days": 7
+    },
+    "tools": {
+      "max_attempts": 3,
+      "backoff_seconds": 0.05,
+      "deadline_seconds": 10.0,
+      "circuit_threshold": 4,
+      "circuit_cooldown_seconds": 30.0
+    },
+    "review": {
+      "feedback_ttl_days": 90
+    },
+    "crm": {
+      "cache_max_age_days": 30,
+      "timeout_seconds": 2.0
+    },
+    "narrative": {
+      "enabled": false,
+      "model": "claude-haiku-4-5",
+      "timeout_seconds": 5.0,
+      "max_tokens": 256
+    },
+    "enabled_checks": null,
+    "ingestion_mode": "strict",
+    "max_in_flight": 4
+  },
+  "data_quality": {
+    "mode": "strict",
+    "score": "1.000",
+    "issues": [],
+    "records_dropped": 0,
+    "records_total": 35
+  },
+  "executed_checks": [
+    "liquidity",
+    "cash_flow",
+    "balance_sheet",
+    "concentration",
+    "crm_context",
+    "suitability",
+    "baseline_coverage",
+    "large_outflows",
+    "statistical_outflows",
+    "spending_growth",
+    "new_counterparty",
+    "income_drop"
+  ],
+  "skipped_checks": [
+    {
+      "check": "historical_comparison",
+      "reason": "missing_inputs: history"
+    },
+    {
+      "check": "duplicate_charges",
+      "reason": "missing_inputs: timestamps"
+    },
+    {
+      "check": "transaction_velocity",
+      "reason": "missing_inputs: timestamps"
+    },
+    {
+      "check": "odd_hours",
+      "reason": "missing_inputs: timestamps"
+    },
+    {
+      "check": "foreign_activity",
+      "reason": "missing_inputs: home_country"
+    },
+    {
+      "check": "structuring_pattern",
+      "reason": "missing_inputs: channels"
+    }
+  ],
+  "failed_checks": [],
+  "narrative": {
+    "text": "Recorded net worth is USD 182,000.00. Cash covers 2.00 months of declared expenses. Review priority is 60/100 (elevated), an uncalibrated triage heuristic. Large recent outflow. The outflow exceeds the demo's absolute review threshold; confirm its purpose. Limited cash reserve. Cash is below the illustrative emergency reserve target. Equity exposure merits suitability review. Equity exposure exceeds the demo limit for the recorded risk profile and horizon. Proposed next step: Confirm the transaction's purpose and authorization with the client before drawing conclusions about unusual activity. Signals request verification and do not establish wrongdoing. Recommendations remain a draft awaiting human approval.",
+    "source": "template",
+    "sentences": [
+      {
+        "text": "Recorded net worth is USD 182,000.00.",
+        "citations": [
+          "metrics.net_worth"
+        ]
+      },
+      {
+        "text": "Cash covers 2.00 months of declared expenses.",
+        "citations": [
+          "metrics.cash_runway_months"
+        ]
+      },
+      {
+        "text": "Review priority is 60/100 (elevated), an uncalibrated triage heuristic.",
+        "citations": [
+          "review_priority"
+        ]
+      },
+      {
+        "text": "Large recent outflow. The outflow exceeds the demo's absolute review threshold; confirm its purpose.",
+        "citations": [
+          "F-LARGE_OUTFLOW-2e6c8b04aff4"
+        ]
+      },
+      {
+        "text": "Limited cash reserve. Cash is below the illustrative emergency reserve target.",
+        "citations": [
+          "F-LOW_LIQUIDITY"
+        ]
+      },
+      {
+        "text": "Equity exposure merits suitability review. Equity exposure exceeds the demo limit for the recorded risk profile and horizon.",
+        "citations": [
+          "F-RISK_PROFILE_MISMATCH"
+        ]
+      },
+      {
+        "text": "Proposed next step: Confirm the transaction's purpose and authorization with the client before drawing conclusions about unusual activity.",
+        "citations": [
+          "A-LARGE_OUTFLOW-2e6c8b04aff4"
+        ]
+      },
+      {
+        "text": "Signals request verification and do not establish wrongdoing.",
+        "citations": []
+      },
+      {
+        "text": "Recommendations remain a draft awaiting human approval.",
+        "citations": [
+          "status"
+        ]
+      }
+    ],
+    "selected_finding_ids": [
+      "F-LARGE_OUTFLOW-2e6c8b04aff4",
+      "F-LOW_LIQUIDITY",
+      "F-RISK_PROFILE_MISMATCH"
+    ]
+  },
+  "tool_calls": [
+    {
+      "agent": "data_fetcher",
+      "tool": "financial.prepare",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.59,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "data_fetcher",
+      "tool": "crm.profile",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.13,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "data_fetcher",
+      "tool": "memory.crm.save",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 80.66,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "data_fetcher",
+      "tool": "memory.history",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.34,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "data_fetcher",
+      "tool": "memory.feedback",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.23,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "analyzer",
+      "tool": "analytics.prepare",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.11,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "analyzer",
+      "tool": "analytics.catalog",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.02,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "analyzer",
+      "tool": "analytics.scan",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.18,
+      "error_code": null,
+      "error_kind": null
+    },
+    {
+      "agent": "advisor",
+      "tool": "narrative.template",
+      "ok": true,
+      "attempts": 1,
+      "duration_ms": 0.05,
+      "error_code": null,
+      "error_kind": null
     }
   ],
   "actions": [
@@ -338,6 +896,7 @@
   "sources": {
     "financial_data": "provided_json",
     "crm_available": true,
+    "crm_source": "fresh",
     "crm_profile": {
       "client_id": "client_demo_001",
       "risk_tolerance": "moderate",
@@ -352,17 +911,17 @@
     {
       "agent": "data_fetcher",
       "status": "completed",
-      "duration_ms": 23.0
+      "duration_ms": 82.01
     },
     {
       "agent": "analyzer",
       "status": "completed",
-      "duration_ms": 0.22
+      "duration_ms": 0.46
     },
     {
       "agent": "advisor",
       "status": "completed",
-      "duration_ms": 0.1
+      "duration_ms": 0.25
     }
   ],
   "review": {
@@ -372,7 +931,205 @@
     "overrides": {
       "A-LARGE_OUTFLOW-2e6c8b04aff4": "Call the client to confirm withdrawal authorization and intended date."
     },
-    "created_at": "2026-10-15T03:36:34.886923+00:00"
+    "created_at": "2026-10-15T04:58:41.689878+00:00",
+    "dismissals": {},
+    "severity_overrides": {},
+    "feedback_ttl_days": 90
   },
-  "memory_persisted": true
+  "memory_persisted": true,
+  "reviewed_findings": [
+    {
+      "id": "F-LARGE_OUTFLOW-2e6c8b04aff4",
+      "code": "LARGE_OUTFLOW",
+      "severity": "high",
+      "title": "Large recent outflow",
+      "explanation": "The outflow exceeds the demo's absolute review threshold; confirm its purpose.",
+      "evidence": {
+        "transaction_id": "sep_wire",
+        "date": "2026-09-26",
+        "amount": "15000.00",
+        "category": "external_transfer",
+        "threshold": "10000",
+        "corroborating_signals": [
+          {
+            "code": "NEW_COUNTERPARTY",
+            "evidence": {
+              "transaction_id": "sep_wire",
+              "date": "2026-09-26",
+              "amount": "15000.00",
+              "category": "external_transfer",
+              "counterparty": "Demo Recipient",
+              "minimum_amount": "2000"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "F-LOW_LIQUIDITY",
+      "code": "LOW_LIQUIDITY",
+      "severity": "high",
+      "title": "Limited cash reserve",
+      "explanation": "Cash is below the illustrative emergency reserve target.",
+      "evidence": {
+        "cash_balance": "12000.00",
+        "monthly_expenses": "6000.00",
+        "coverage_months": "2.00",
+        "target_months": "6",
+        "target_gap": "24000.00"
+      }
+    },
+    {
+      "id": "F-RISK_PROFILE_MISMATCH",
+      "code": "RISK_PROFILE_MISMATCH",
+      "severity": "high",
+      "title": "Equity exposure merits suitability review",
+      "explanation": "Equity exposure exceeds the demo limit for the recorded risk profile and horizon.",
+      "evidence": {
+        "risk_tolerance": "moderate",
+        "investment_horizon_years": 8,
+        "equity_share": "0.90",
+        "limit": "0.65"
+      }
+    },
+    {
+      "id": "F-SINGLE_ASSET_CONCENTRATION-9b5b44320d01",
+      "code": "SINGLE_ASSET_CONCENTRATION",
+      "severity": "high",
+      "title": "Investment concentration",
+      "explanation": "One recorded asset exceeds the illustrative concentration threshold.",
+      "evidence": {
+        "asset_id": "TECH_FUND",
+        "market_value": "140000.00",
+        "share_of_investments": "0.70",
+        "limit": "0.40"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-121db83be141",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "groceries",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "800.00",
+        "latest_amount": "2100.00",
+        "increase": "1300.00",
+        "growth_fraction": "1.62"
+      }
+    },
+    {
+      "id": "F-SPENDING_GROWTH-6e3552347443",
+      "code": "SPENDING_GROWTH",
+      "severity": "medium",
+      "title": "Category spending increased",
+      "explanation": "Spending rose between two complete calendar months in the supplied history.",
+      "evidence": {
+        "category": "dining",
+        "previous_month": "2026-08-01",
+        "latest_month": "2026-09-01",
+        "previous_amount": "400.00",
+        "latest_amount": "1200.00",
+        "increase": "800.00",
+        "growth_fraction": "2.00"
+      }
+    },
+    {
+      "id": "F-UNUSUAL_TRANSACTION-a1bf8659e27e",
+      "code": "UNUSUAL_TRANSACTION",
+      "severity": "medium",
+      "title": "Unusual transaction amount",
+      "explanation": "The outflow exceeds both its category's robust historical band and ratio guard.",
+      "evidence": {
+        "transaction_id": "sep_spike",
+        "date": "2026-09-22",
+        "amount": "1800.00",
+        "category": "groceries",
+        "baseline_count": 16,
+        "median": "100.00",
+        "median_absolute_deviation": "2.50",
+        "threshold": "500.00"
+      }
+    },
+    {
+      "id": "F-LIMITED_ANOMALY_BASELINE",
+      "code": "LIMITED_ANOMALY_BASELINE",
+      "severity": "info",
+      "title": "Statistical coverage is limited",
+      "explanation": "Some recent categories have fewer than 8 historical outflows, or no recent outflows exist. Absolute amount rules still apply; absence of a flag is inconclusive.",
+      "evidence": {
+        "eligible_categories": [
+          "groceries"
+        ],
+        "required_baseline_per_category": 8,
+        "recent_outflows": 7
+      }
+    }
+  ],
+  "reviewed_priority": {
+    "score": 60,
+    "band": "elevated",
+    "calibrated": false,
+    "meaning": "Heuristic review priority; not a probability or investment risk rating."
+  },
+  "reviewed_narrative": {
+    "text": "Recorded net worth is USD 182,000.00. Cash covers 2.00 months of declared expenses. Review priority is 60/100 (elevated), an uncalibrated triage heuristic. Large recent outflow. The outflow exceeds the demo's absolute review threshold; confirm its purpose. Limited cash reserve. Cash is below the illustrative emergency reserve target. Equity exposure merits suitability review. Equity exposure exceeds the demo limit for the recorded risk profile and horizon. Proposed next step: Call the client to confirm withdrawal authorization and intended date. Signals request verification and do not establish wrongdoing.",
+    "source": "template",
+    "sentences": [
+      {
+        "text": "Recorded net worth is USD 182,000.00.",
+        "citations": [
+          "metrics.net_worth"
+        ]
+      },
+      {
+        "text": "Cash covers 2.00 months of declared expenses.",
+        "citations": [
+          "metrics.cash_runway_months"
+        ]
+      },
+      {
+        "text": "Review priority is 60/100 (elevated), an uncalibrated triage heuristic.",
+        "citations": [
+          "reviewed_priority"
+        ]
+      },
+      {
+        "text": "Large recent outflow. The outflow exceeds the demo's absolute review threshold; confirm its purpose.",
+        "citations": [
+          "F-LARGE_OUTFLOW-2e6c8b04aff4"
+        ]
+      },
+      {
+        "text": "Limited cash reserve. Cash is below the illustrative emergency reserve target.",
+        "citations": [
+          "F-LOW_LIQUIDITY"
+        ]
+      },
+      {
+        "text": "Equity exposure merits suitability review. Equity exposure exceeds the demo limit for the recorded risk profile and horizon.",
+        "citations": [
+          "F-RISK_PROFILE_MISMATCH"
+        ]
+      },
+      {
+        "text": "Proposed next step: Call the client to confirm withdrawal authorization and intended date.",
+        "citations": [
+          "A-LARGE_OUTFLOW-2e6c8b04aff4"
+        ]
+      },
+      {
+        "text": "Signals request verification and do not establish wrongdoing.",
+        "citations": []
+      }
+    ],
+    "selected_finding_ids": [
+      "F-LARGE_OUTFLOW-2e6c8b04aff4",
+      "F-LOW_LIQUIDITY",
+      "F-RISK_PROFILE_MISMATCH"
+    ]
+  }
 }

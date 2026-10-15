@@ -1,0 +1,439 @@
+{
+  "client_id": "activity_demo",
+  "as_of": "2026-10-01",
+  "history_start": "2026-07-01",
+  "currency": "USD",
+  "cash_balance": "6000.00",
+  "monthly_income": "9000.00",
+  "monthly_expenses": "6000.00",
+  "liabilities": "0.00",
+  "holdings": [
+    {
+      "asset_id": "GLOBAL",
+      "asset_class": "equity",
+      "market_value": "30000.00"
+    },
+    {
+      "asset_id": "DOMESTIC",
+      "asset_class": "equity",
+      "market_value": "30000.00"
+    },
+    {
+      "asset_id": "BONDS",
+      "asset_class": "bonds",
+      "market_value": "40000.00"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "salary_7",
+      "date": "2026-07-01",
+      "amount": "9000.00",
+      "kind": "income",
+      "category": "salary",
+      "counterparty": "Synthetic employer"
+    },
+    {
+      "id": "groceries_7_2",
+      "date": "2026-07-02",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-02T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_7_5",
+      "date": "2026-07-05",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-05T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_7_8",
+      "date": "2026-07-08",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-08T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_7_11",
+      "date": "2026-07-11",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-11T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_7_14",
+      "date": "2026-07-14",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-14T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_7_17",
+      "date": "2026-07-17",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-17T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_7_20",
+      "date": "2026-07-20",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-20T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_7_23",
+      "date": "2026-07-23",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-07-23T12:00:00-04:00"
+    },
+    {
+      "id": "salary_8",
+      "date": "2026-08-01",
+      "amount": "9000.00",
+      "kind": "income",
+      "category": "salary",
+      "counterparty": "Synthetic employer"
+    },
+    {
+      "id": "groceries_8_2",
+      "date": "2026-08-02",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-02T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_8_5",
+      "date": "2026-08-05",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-05T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_8_8",
+      "date": "2026-08-08",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-08T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_8_11",
+      "date": "2026-08-11",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-11T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_8_14",
+      "date": "2026-08-14",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-14T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_8_17",
+      "date": "2026-08-17",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-17T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_8_20",
+      "date": "2026-08-20",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-20T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_8_23",
+      "date": "2026-08-23",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-08-23T12:00:00-04:00"
+    },
+    {
+      "id": "salary_9",
+      "date": "2026-09-01",
+      "amount": "4500.00",
+      "kind": "income",
+      "category": "salary",
+      "counterparty": "Synthetic employer"
+    },
+    {
+      "id": "groceries_9_2",
+      "date": "2026-09-02",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-02T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_9_5",
+      "date": "2026-09-05",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-05T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_9_8",
+      "date": "2026-09-08",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-08T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_9_11",
+      "date": "2026-09-11",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-11T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_9_14",
+      "date": "2026-09-14",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-14T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_9_17",
+      "date": "2026-09-17",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-17T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_9_20",
+      "date": "2026-09-20",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-20T12:00:00-04:00"
+    },
+    {
+      "id": "groceries_9_23",
+      "date": "2026-09-23",
+      "amount": "100.00",
+      "kind": "expense",
+      "category": "groceries",
+      "counterparty": "Synthetic market",
+      "country": "US",
+      "channel": "card",
+      "timestamp": "2026-09-23T12:00:00-04:00"
+    },
+    {
+      "id": "burst_0",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:00:00+08:00"
+    },
+    {
+      "id": "burst_1",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:01:00+08:00"
+    },
+    {
+      "id": "burst_2",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:02:00+08:00"
+    },
+    {
+      "id": "burst_3",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:03:00+08:00"
+    },
+    {
+      "id": "burst_4",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:04:00+08:00"
+    },
+    {
+      "id": "burst_5",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:05:00+08:00"
+    },
+    {
+      "id": "burst_6",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:06:00+08:00"
+    },
+    {
+      "id": "burst_7",
+      "date": "2026-09-29",
+      "amount": "2500.00",
+      "kind": "expense",
+      "category": "electronics",
+      "counterparty": "Synthetic new merchant",
+      "country": "SG",
+      "channel": "card",
+      "timestamp": "2026-09-29T02:07:00+08:00"
+    },
+    {
+      "id": "cash_0",
+      "date": "2026-09-27",
+      "amount": "9000.01",
+      "kind": "withdrawal",
+      "category": "cash",
+      "counterparty": "Synthetic ATM",
+      "country": "US",
+      "channel": "cash",
+      "timestamp": "2026-09-27T14:00:00-04:00"
+    },
+    {
+      "id": "cash_1",
+      "date": "2026-09-28",
+      "amount": "9000.01",
+      "kind": "withdrawal",
+      "category": "cash",
+      "counterparty": "Synthetic ATM",
+      "country": "US",
+      "channel": "cash",
+      "timestamp": "2026-09-28T14:00:00-04:00"
+    },
+    {
+      "id": "cash_2",
+      "date": "2026-09-29",
+      "amount": "9000.01",
+      "kind": "withdrawal",
+      "category": "cash",
+      "counterparty": "Synthetic ATM",
+      "country": "US",
+      "channel": "cash",
+      "timestamp": "2026-09-29T14:00:00-04:00"
+    }
+  ],
+  "home_country": "US"
+}

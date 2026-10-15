@@ -33,6 +33,7 @@ class Runner:
         self.output = output
         self.results: list[dict] = []
         self.environment = {**os.environ, "PYTHONUTF8": "1"}
+        self.environment.pop("ANTHROPIC_API_KEY", None)
 
     def run(self, name: str, *arguments: str, expected_exit: int = 0) -> dict:
         result = subprocess.run(
@@ -55,7 +56,7 @@ class Runner:
             {
                 "name": name,
                 "exit_code": result.returncode,
-                "status": report["status"],
+                "status": report.get("status", "catalog"),
                 "passed": True,
             }
         )
@@ -238,6 +239,98 @@ def validate(runner: Runner) -> None:
     original = Path(database).read_bytes()
     runner.run("protected-output", "analyze", *common, "--output", database, expected_exit=2)
     require(Path(database).read_bytes() == original, "Output collision changed the database")
+
+    checks = runner.run("detector-catalog", "checks")
+    require(len(checks["checks"]) == 18, "Detector catalog is incomplete")
+    tools = runner.run("tool-capabilities", "tools")
+    require("crm.profile" not in tools["agent_permissions"]["advisor"], "Scope leaked")
+    configured = runner.run(
+        "configured", "--config", str(ROOT / "config/settings.json"), "analyze", *common
+    )
+    require(
+        configured["configuration"]["tools"]["circuit_threshold"] == 4, "Configuration was ignored"
+    )
+    bad_config = runner.output / "invalid-settings.json"
+    bad_config.write_text('{"analysis":{"typo":1}}', encoding="utf-8")
+    runner.run("invalid-config", "--config", str(bad_config), "analyze", *common, expected_exit=2)
+    batch_common = [
+        "--input-dir",
+        str(ROOT / "samples/clients"),
+        "--crm-fixture",
+        str(ROOT / "samples/crm_batch.json"),
+        "--db",
+        database,
+    ]
+    batch = runner.run("batch-strict", "batch", *batch_common, expected_exit=1)
+    require(batch["total"] == 3 and batch["failed"] == 1, "Batch did not isolate invalid import")
+    batch = runner.run(
+        "batch-lenient",
+        "batch",
+        *batch_common,
+        "--ingestion-mode",
+        "lenient",
+        "--output-dir",
+        str(runner.output / "batch-reports"),
+    )
+    require(batch["failed"] == 0 and len(batch["reports"]) == 3, "Lenient batch failed")
+    repaired = next(r for r in batch["reports"] if r["client_id"] == "import_demo")
+    require(repaired["data_quality"]["records_dropped"] == 2, "Repairs lack provenance")
+    require(not repaired["guardrails"]["portfolio_discussion_allowed"], "Partial import cleared")
+
+    decision = runner.output / "decision.json"
+    pending = historical
+    decision.write_text(
+        json.dumps(
+            {
+                "decision": "approve",
+                "reviewer": "Synthetic reviewer",
+                "notes": "Demonstrate reusable feedback",
+                "dismissals": {"F-LOW_LIQUIDITY": "Planned cash requirement"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    annotated = runner.run(
+        "file-review", "review", pending["run_id"], "--db", database, "--decisions", str(decision)
+    )
+    require(annotated["findings"] == pending["findings"], "Annotation changed original evidence")
+    require(
+        "F-LOW_LIQUIDITY" not in {f["id"] for f in annotated["reviewed_findings"]},
+        "Dismissal was not applied to reviewed findings",
+    )
+    require(
+        "draft awaiting" not in annotated["reviewed_narrative"]["text"],
+        "Reviewed narrative has draft state",
+    )
+    later_input = runner.output / "later-client.json"
+    later_raw = json.loads(SAMPLE.read_text(encoding="utf-8"))
+    later_raw["as_of"] = "2026-10-02"
+    later_input.write_text(json.dumps(later_raw), encoding="utf-8")
+    later = runner.run(
+        "feedback-reuse",
+        "analyze",
+        "--input",
+        str(later_input),
+        "--db",
+        database,
+        "--crm-fixture",
+        str(CRM),
+    )
+    require(
+        "F-LOW_LIQUIDITY" not in {f["id"] for f in later["findings"]},
+        "Identical evidence was not suppressed",
+    )
+    require(
+        "F-LOW_LIQUIDITY" in {f["id"] for f in later["raw_findings"]},
+        "Suppression removed raw evidence",
+    )
+    require(not later["advisory_release_allowed"], "Feedback bypassed new review")
+    fallback = runner.run("narrative-fallback", "analyze", *common, "--llm")
+    require(fallback["narrative"]["source"] == "template", "Unavailable model has no fallback")
+    require(fallback["execution_status"] == "degraded", "Narrative fallback was hidden")
+    cache = runner.run("cached-outage", "analyze", *common, "--simulate-crm-failure")
+    require(cache["sources"]["crm_source"] == "cache", "Valid CRM cache was not used")
+    require(not cache["guardrails"]["portfolio_discussion_allowed"], "Cache cleared suitability")
 
 
 def main() -> int:

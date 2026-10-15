@@ -1,0 +1,30 @@
+{
+  "analysis": {
+    "version": "2026-10-demo-v2",
+    "emergency_months": "6",
+    "critical_cash_months": "3",
+    "absolute_outflow": "10000",
+    "minimum_baseline": 8,
+    "income_drop_fraction": "0.30",
+    "velocity_count": 8,
+    "velocity_window_minutes": 60
+  },
+  "tools": {
+    "max_attempts": 3,
+    "backoff_seconds": 0.05,
+    "deadline_seconds": 10.0,
+    "circuit_threshold": 4,
+    "circuit_cooldown_seconds": 30.0
+  },
+  "crm": {"timeout_seconds": 2.0, "cache_max_age_days": 30},
+  "review": {"feedback_ttl_days": 90},
+  "narrative": {
+    "enabled": false,
+    "model": "claude-haiku-4-5",
+    "timeout_seconds": 5.0,
+    "max_tokens": 256
+  },
+  "enabled_checks": null,
+  "ingestion_mode": "strict",
+  "max_in_flight": 4
+}

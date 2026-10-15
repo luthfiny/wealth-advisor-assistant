@@ -10,23 +10,29 @@ from typing import Any
 from uuid import uuid4
 
 from .agents import AdvisorAgent, Agent, AnalyzerAgent, DataFetcherAgent
+from .config import Settings
 from .domain import Session, utc_now
+from .feedback import fingerprint
 from .memory import Memory, MemoryError
 from .observability import emit
+from .priority import review_priority
 from .tools import ToolClient, ToolError
 
 
 class OrchestratorAgent:
-    def __init__(self, tools: ToolClient, memory: Memory, agents: list[Agent] | None = None):
+    def __init__(
+        self, tools: ToolClient, memory: Memory, agents: list[Agent] | None = None, settings=None
+    ):
         self.tools = tools
         self.memory = memory
+        self.settings = settings or Settings()
         self.agents = (
             agents
             if agents is not None
             else [
-                DataFetcherAgent(),
-                AnalyzerAgent(),
-                AdvisorAgent(),
+                DataFetcherAgent(self.settings),
+                AnalyzerAgent(self.settings),
+                AdvisorAgent(self.settings),
             ]
         )
         names = [a.name for a in self.agents]
@@ -52,7 +58,16 @@ class OrchestratorAgent:
                 )
                 step_start = time.monotonic()
                 session.events.append({"agent": agent.name, "status": "started"})
-                agent.run(session, self.tools)
+                allowed = getattr(agent, "allowed_tools", frozenset())
+                if not isinstance(allowed, (set, frozenset)):
+                    allowed = frozenset()
+                scoped = self.tools.scoped(
+                    allowed,
+                    observer=lambda metadata, agent_name=agent.name: session.tool_calls.append(
+                        {"agent": agent_name, **metadata}
+                    ),
+                )
+                agent.run(session, scoped)
                 session.completed.update(agent.provides)
                 session.events[-1].update(
                     {
@@ -77,7 +92,7 @@ class OrchestratorAgent:
                 error_type=type(exc).__name__,
             )
             return {
-                "schema_version": "1.0",
+                "schema_version": "1.1",
                 "run_id": session.run_id,
                 "created_at": started,
                 "status": "failed",
@@ -85,6 +100,7 @@ class OrchestratorAgent:
                 "advisory_release_allowed": False,
                 "error": {"code": code, "message": message},
                 "events": session.events,
+                "tool_calls": session.tool_calls,
                 "warnings": session.warnings,
                 "actions": [],
                 "reviewed_actions": [],
@@ -92,7 +108,7 @@ class OrchestratorAgent:
             }
 
         report: dict[str, Any] = {
-            "schema_version": "1.0",
+            "schema_version": "1.1",
             "run_id": session.run_id,
             "created_at": started,
             "client_id": data.client_id,
@@ -109,18 +125,39 @@ class OrchestratorAgent:
             },
             "metrics": session.metrics,
             "findings": [asdict(f) for f in session.findings],
+            "raw_findings": [asdict(f) for f in session.raw_findings],
+            "detector_signals": [asdict(f) for f in session.detector_signals],
+            "suppressed_findings": session.suppressed_findings,
+            "feedback_events": session.feedback_events,
+            "recurring_finding_ids": session.recurring_ids,
+            "review_priority": review_priority(session.findings),
+            "original_review_priority": review_priority(session.raw_findings),
+            "policy_id": fingerprint(asdict(self.settings.analysis)),
+            "configuration": self.settings.to_dict(),
+            "data_quality": session.data_quality,
+            "executed_checks": session.executed_checks,
+            "skipped_checks": session.skipped_checks,
+            "failed_checks": session.failed_checks,
+            "narrative": session.narrative,
+            "tool_calls": session.tool_calls,
             "actions": [asdict(a) for a in session.actions],
             "reviewed_actions": [],
             "guardrails": {
                 "human_review_required": True,
-                "portfolio_discussion_allowed": not any(
+                "portfolio_discussion_allowed": session.profile_source == "fresh"
+                and not session.failed_checks
+                and not session.data_quality.get("issues")
+                and {"crm_context", "suitability", "concentration", "liquidity"}
+                <= set(session.executed_checks)
+                and not any(
                     f.code in {"CRM_UNAVAILABLE", "STALE_PROFILE", "KYC_REVIEW"}
-                    for f in session.findings
+                    for f in session.raw_findings
                 ),
             },
             "sources": {
                 "financial_data": "provided_json",
                 "crm_available": session.profile is not None,
+                "crm_source": session.profile_source,
                 "crm_profile": asdict(session.profile) if session.profile else None,
                 "history_run_ids": [h["run_id"] for h in session.history],
             },

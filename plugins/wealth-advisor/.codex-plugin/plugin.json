@@ -1,0 +1,18 @@
+{
+  "name": "wealth-advisor",
+  "version": "0.1.0",
+  "description": "Run the local wealth advisor agents, inspect evidence and record human reviews on synthetic financial data.",
+  "author": {"name": "Luthfi Naufan Yamin"},
+  "license": "MIT",
+  "mcpServers": "./.mcp.json",
+  "requires_local_executor": true,
+  "interface": {
+    "displayName": "Wealth Advisor Assistant",
+    "shortDescription": "Analyze synthetic clients with auditable agents",
+    "longDescription": "Inspect financial findings, agent routing, real loopback CRM calls and human-review checkpoints in a local demo.",
+    "developerName": "Luthfi Naufan Yamin",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": ["Analyze the original synthetic client and show its execution trace", "Compare the balanced and activity samples"]
+  }
+}

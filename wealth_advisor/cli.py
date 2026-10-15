@@ -1,159 +1,244 @@
-"""Command-line composition root. JSON results go to stdout, event logs to stderr."""
-
-from __future__ import annotations
+"""CLI commands; the composition root is runtime.py. JSON stdout, event logs stderr."""
 
 import argparse
-import os
-import tempfile
+import sys
+from dataclasses import replace
 from pathlib import Path
-from typing import Any
 
+from .analysis import DetectorRegistry
+from .config import Settings
 from .domain import ValidationError, dumps
 from .memory import MemoryError, SQLiteMemory
 from .mock_crm import create_server
 from .observability import configure_logging, emit
-from .orchestrator import OrchestratorAgent
-from .tools import (
-    AnalyticsTool,
-    FinancialDataTool,
-    FixtureCRMTool,
-    HistoryTool,
-    HttpCRMTool,
-    ToolError,
-    ToolRegistry,
-    read_json,
-)
+from .output import write_result as write_result
+from .output import write_result_file
+from .runtime import build_system as build_system
+from .tools import ToolError, read_json
 
 
-def build_system(
-    *,
-    db_path: Path,
-    crm_fixture: Path = Path("samples/crm.json"),
-    crm_url: str | None = None,
-    simulate_crm_failure: bool = False,
-    crm_timeout: float = 2.0,
-) -> tuple[OrchestratorAgent, SQLiteMemory]:
-    memory = SQLiteMemory(db_path)
-    crm = (
-        HttpCRMTool(crm_url, timeout=crm_timeout)
-        if crm_url
-        else FixtureCRMTool(crm_fixture, simulate_failure=simulate_crm_failure)
-    )
-    registry = ToolRegistry(
-        {
-            "financial.load": FinancialDataTool(),
-            "crm.profile": crm,
-            "analytics.scan": AnalyticsTool(),
-            "memory.history": HistoryTool(memory),
-        }
-    )
-    return OrchestratorAgent(registry, memory), memory
-
-
-def write_result(report: dict[str, Any], output: Path | None) -> None:
-    result = dumps(report) + "\n"
-    if output:
-        output.parent.mkdir(parents=True, exist_ok=True)
-        temporary: str | None = None
-        try:
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=output.parent, delete=False
-            ) as handle:
-                temporary = handle.name
-                handle.write(result)
-            os.replace(temporary, output)
-        finally:
-            if temporary and os.path.exists(temporary):
-                os.unlink(temporary)
-    print(result, end="")
-
-
-def _validate_paths(args: argparse.Namespace) -> None:
-    """Check export destinations before any analysis or review mutation occurs."""
-    output = getattr(args, "output", None)
-    if output is None:
-        return
-    for name in ("input", "db", "crm_fixture"):
-        source = getattr(args, name, None)
-        if source is not None and (
-            output.resolve() == source.resolve()
-            or (output.exists() and source.exists() and output.samefile(source))
-        ):
-            raise ValidationError(
-                "Output must not replace the input, CRM fixture or memory database"
-            )
-
-
-def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Auditable wealth advisor agent simulation")
-    parser.add_argument(
-        "--log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO"
-    )
-    commands = parser.add_subparsers(dest="command", required=True)
-    analyze = commands.add_parser("analyze", help="Run agents and save a draft for human review")
-    analyze.add_argument("--input", type=Path, required=True)
-    analyze.add_argument("--db", type=Path, default=Path("data/memory.sqlite3"))
-    analyze.add_argument("--output", type=Path)
-    source = analyze.add_mutually_exclusive_group()
-    source.add_argument("--crm-url", help="HTTP(S) mock CRM base URL")
+def _common(p):
+    p.add_argument("--db", type=Path, default=Path("data/memory.sqlite3"))
+    p.add_argument("--crm-fixture", type=Path, default=Path("samples/crm.json"))
+    source = p.add_mutually_exclusive_group()
+    source.add_argument("--crm-url")
     source.add_argument("--simulate-crm-failure", action="store_true")
-    analyze.add_argument("--crm-fixture", type=Path, default=Path("samples/crm.json"))
-    analyze.add_argument("--crm-timeout", type=float, default=2.0)
+    p.add_argument("--crm-timeout", type=float)
+    p.add_argument("--llm", action="store_true", help="Optional Claude sentence selection")
+    p.add_argument("--ingestion-mode", choices=["strict", "lenient"])
+    p.add_argument("--output", type=Path)
 
-    review = commands.add_parser("review", help="Approve/reject a saved run exactly once")
+
+def _parser():
+    p = argparse.ArgumentParser(description="Auditable wealth advisor agent simulation")
+    p.add_argument("--log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO")
+    p.add_argument("--config", type=Path, help="Validated JSON settings")
+    commands = p.add_subparsers(dest="command", required=True)
+    analyze = commands.add_parser("analyze", help="Analyze one client and save a draft for review")
+    analyze.add_argument("--input", type=Path, required=True)
+    _common(analyze)
+    batch = commands.add_parser("batch", help="Analyze clients with independent failure boundaries")
+    source = batch.add_mutually_exclusive_group(required=True)
+    source.add_argument("--input", type=Path, nargs="+")
+    source.add_argument("--input-dir", type=Path)
+    batch.add_argument("--output-dir", type=Path)
+    _common(batch)
+    review = commands.add_parser("review", help="Approve or reject a persisted draft once")
     review.add_argument("run_id")
     review.add_argument("--db", type=Path, default=Path("data/memory.sqlite3"))
-    review.add_argument("--decision", choices=["approve", "reject"], required=True)
-    review.add_argument("--reviewer", required=True)
-    review.add_argument("--notes", required=True)
-    review.add_argument("--override", action="append", default=[], metavar="ACTION_ID=INSTRUCTION")
+    mode = review.add_mutually_exclusive_group()
+    mode.add_argument("--decision", choices=["approve", "reject"])
+    mode.add_argument("--decisions", type=Path, help="JSON review decision")
+    mode.add_argument("--interactive", action="store_true")
+    review.add_argument("--reviewer")
+    review.add_argument("--notes")
+    review.add_argument("--override", action="append", default=[], metavar="ACTION_ID=TEXT")
+    review.add_argument("--dismiss", action="append", default=[], metavar="FINDING_ID=REASON")
+    review.add_argument("--severity", action="append", default=[], metavar="FINDING_ID=SEVERITY")
+    review.add_argument("--feedback-ttl-days", type=int)
     review.add_argument("--output", type=Path)
-
-    inspect = commands.add_parser("inspect", help="Retrieve a saved run and its final review")
+    inspect = commands.add_parser("inspect", help="Read the original draft and final review")
     inspect.add_argument("run_id")
     inspect.add_argument("--db", type=Path, default=Path("data/memory.sqlite3"))
     inspect.add_argument("--output", type=Path)
-
-    server = commands.add_parser("serve-crm", help="Run the optional loopback mock HTTP API")
+    server = commands.add_parser("serve-crm", help="Run a loopback mock HTTP CRM")
     server.add_argument("--fixture", type=Path, default=Path("samples/crm.json"))
     server.add_argument("--port", type=int, default=8765)
     server.add_argument(
         "--failure-mode", choices=["none", "unavailable", "malformed"], default="none"
     )
-    return parser
+    commands.add_parser("tools", help="List tool capabilities and agent allowlists")
+    commands.add_parser("checks", help="List detector requirements")
+    return p
 
 
-def main(argv: list[str] | None = None) -> int:
+def _validate_paths(args):
+    output = getattr(args, "output", None)
+    if output is None:
+        return
+    sources = [getattr(args, name, None) for name in ("db", "crm_fixture", "config", "decisions")]
+    input_value = getattr(args, "input", None)
+    sources.extend(input_value if isinstance(input_value, list) else [input_value])
+    if getattr(args, "input_dir", None):
+        sources.extend(args.input_dir.glob("*.json"))
+    for source in sources:
+        if source is not None and (
+            output.resolve() == source.resolve()
+            or (output.exists() and source.exists() and output.samefile(source))
+        ):
+            raise ValidationError(
+                "Output must not replace inputs, settings, decisions or the memory database"
+            )
+
+
+def _pairs(items, name):
+    result = {}
+    for item in items:
+        key, separator, value = item.partition("=")
+        if not separator or not key or key in result:
+            raise ValidationError(f"Each {name} must use a unique ID=VALUE")
+        result[key] = value
+    return result
+
+
+def _ask(prompt):
+    print(prompt, end="", file=sys.stderr, flush=True)
+    return input().strip()
+
+
+def _review_arguments(args, settings):
+    supplied = {
+        "overrides": _pairs(args.override, "override"),
+        "dismissals": _pairs(args.dismiss, "dismissal"),
+        "severity_overrides": _pairs(args.severity, "severity override"),
+    }
+    ttl = (
+        args.feedback_ttl_days
+        if args.feedback_ttl_days is not None
+        else settings.review.feedback_ttl_days
+    )
+    if args.decisions:
+        if (
+            any(supplied.values())
+            or args.reviewer
+            or args.notes
+            or args.feedback_ttl_days is not None
+        ):
+            raise ValidationError("A decisions file cannot be combined with inline review fields")
+        raw = read_json(args.decisions)
+        if not isinstance(raw, dict) or set(raw) - {
+            "decision",
+            "reviewer",
+            "notes",
+            "overrides",
+            "dismissals",
+            "severity_overrides",
+            "ttl_days",
+        }:
+            raise ValidationError("Review decision file has an invalid shape")
+        for name in supplied:
+            value = raw.get(name, {})
+            if not isinstance(value, dict) or any(
+                not isinstance(k, str) or not isinstance(v, str) for k, v in value.items()
+            ):
+                raise ValidationError("Review annotations must map string IDs to string values")
+        return {
+            "decision": raw.get("decision"),
+            "reviewer": raw.get("reviewer"),
+            "notes": raw.get("notes"),
+            **{name: raw.get(name, {}) for name in supplied},
+            "ttl_days": raw.get("ttl_days", ttl),
+        }
+    if args.interactive:
+        report = SQLiteMemory(args.db).get(args.run_id)
+        for finding in report["findings"]:
+            print(f"{finding['id']}: [{finding['severity']}] {finding['title']}", file=sys.stderr)
+        try:
+            decision = _ask("Decision (approve/reject, blank cancels): ")
+            if not decision:
+                raise ValidationError("Review cancelled; the report remains pending")
+            reviewer = args.reviewer or _ask("Reviewer: ")
+            notes = args.notes or _ask("Validation notes: ")
+        except EOFError as exc:
+            raise ValidationError("Interactive input ended; no review was recorded") from exc
+    else:
+        decision, reviewer, notes = args.decision, args.reviewer, args.notes
+    return {"decision": decision, "reviewer": reviewer, "notes": notes, **supplied, "ttl_days": ttl}
+
+
+def _batch(args, settings):
+    paths = args.input or sorted(args.input_dir.glob("*.json"))
+    if not paths:
+        raise ValidationError("Batch requires at least one JSON input file")
+    if args.output_dir and (
+        args.output_dir.resolve() == args.db.resolve()
+        or any(args.output_dir.resolve() in {p.resolve(), p.parent.resolve()} for p in paths)
+    ):
+        raise ValidationError(
+            "Batch output directory must be separate from inputs and the database"
+        )
+    system, _ = build_system(
+        db_path=args.db,
+        crm_fixture=args.crm_fixture,
+        crm_url=args.crm_url,
+        crm_timeout=args.crm_timeout,
+        simulate_crm_failure=args.simulate_crm_failure,
+        settings=settings,
+    )
+    reports = []
+    for path in paths:
+        report = system.run(path)
+        if args.output_dir:
+            try:
+                write_result_file(report, args.output_dir / (report["run_id"] + ".json"))
+            except OSError:
+                report["export_error"] = "Individual report export failed"
+        reports.append(report)
+    failures = sum(r["status"] == "failed" or "export_error" in r for r in reports)
+    result = {
+        "schema_version": "1.1",
+        "status": "partial_failed" if failures else "completed",
+        "total": len(reports),
+        "failed": failures,
+        "reports": reports,
+    }
+    write_result(result, args.output)
+    return 1 if failures else 0
+
+
+def main(argv=None):
     args = _parser().parse_args(argv)
     configure_logging(args.log_level)
     try:
         _validate_paths(args)
+        settings = Settings.load(args.config)
+        if getattr(args, "llm", False):
+            settings = replace(settings, narrative=replace(settings.narrative, enabled=True))
+        if getattr(args, "ingestion_mode", None):
+            settings = replace(settings, ingestion_mode=args.ingestion_mode)
+        settings.validate()
         if args.command == "analyze":
             system, _ = build_system(
                 db_path=args.db,
                 crm_fixture=args.crm_fixture,
                 crm_url=args.crm_url,
-                simulate_crm_failure=args.simulate_crm_failure,
                 crm_timeout=args.crm_timeout,
+                simulate_crm_failure=args.simulate_crm_failure,
+                settings=settings,
             )
             report = system.run(args.input)
             write_result(report, args.output)
             return 1 if report["status"] == "failed" else 0
+        if args.command == "batch":
+            return _batch(args, settings)
         if args.command == "review":
-            overrides: dict[str, str] = {}
-            for item in args.override:
-                action_id, separator, instruction = item.partition("=")
-                if not separator or action_id in overrides:
-                    raise ValidationError("Each override must use a unique ACTION_ID=INSTRUCTION")
-                overrides[action_id] = instruction
-            report = SQLiteMemory(args.db).review(
-                args.run_id, args.decision, args.reviewer, args.notes, overrides
-            )
+            decision = _review_arguments(args, settings)
+            report = SQLiteMemory(args.db).review(args.run_id, **decision)
             emit(
                 "review.recorded",
                 run_id=args.run_id,
-                decision=args.decision,
-                override_count=len(overrides),
+                decision=decision["decision"],
+                override_count=len(decision["overrides"]),
             )
             write_result(report, args.output)
         elif args.command == "inspect":
@@ -170,12 +255,25 @@ def main(argv: list[str] | None = None) -> int:
                     failure_mode=args.failure_mode,
                 )
                 server.serve_forever()
+        elif args.command == "checks":
+            print(dumps({"checks": DetectorRegistry().catalog()}))
+        elif args.command == "tools":
+            system, _ = build_system(db_path=Path("data/memory.sqlite3"), settings=settings)
+            print(
+                dumps(
+                    {
+                        "tools": system.tools.describe(),
+                        "agent_permissions": {
+                            a.name: sorted(a.allowed_tools) for a in system.agents
+                        },
+                    }
+                )
+            )
         return 0
     except KeyboardInterrupt:
         return 130
     except (ValidationError, MemoryError, ToolError, OSError, ValueError) as exc:
         code = exc.code if isinstance(exc, ToolError) else "command_error"
-        # OSError messages can contain local paths; publish a stable storage error instead.
         message = "File or database operation failed" if isinstance(exc, OSError) else str(exc)
         print(dumps({"status": "failed", "error": {"code": code, "message": message}}))
         emit("command.failed", code=code, error_type=type(exc).__name__)

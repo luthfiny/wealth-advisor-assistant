@@ -117,6 +117,9 @@ class Transaction:
     kind: str
     category: str
     counterparty: str
+    timestamp: datetime | None = None
+    country: str | None = None
+    channel: str | None = None
 
 
 @dataclass(frozen=True)
@@ -138,6 +141,7 @@ class ClientData:
     liabilities: Decimal
     holdings: tuple[Holding, ...]
     transactions: tuple[Transaction, ...]
+    home_country: str | None = None
 
     @classmethod
     def parse(cls, raw: Any) -> ClientData:
@@ -150,6 +154,11 @@ class ClientData:
         currency = raw.get("currency")
         if not isinstance(currency, str) or not re.fullmatch(r"[A-Z]{3}", currency):
             raise ValidationError("currency must be a three-letter uppercase code")
+        home_country = raw.get("home_country")
+        if home_country is not None and (
+            not isinstance(home_country, str) or not re.fullmatch(r"[A-Z]{2}", home_country)
+        ):
+            raise ValidationError("home_country must be a two-letter uppercase code")
         holdings: list[Holding] = []
         asset_ids: set[str] = set()
         for item in list_value(raw.get("holdings"), "holdings", maximum=10_000):
@@ -195,6 +204,24 @@ class ClientData:
                 raise ValidationError("unsupported transaction kind")
             if item.get("currency", currency) != currency:
                 raise ValidationError("mixed currencies require an FX adapter; normalize first")
+            timestamp = None
+            if item.get("timestamp") is not None:
+                try:
+                    timestamp = datetime.fromisoformat(item["timestamp"])
+                except (ValueError, TypeError) as exc:
+                    raise ValidationError("transaction.timestamp must be an ISO datetime") from exc
+                if timestamp.tzinfo is None or timestamp.date() != tx_date:
+                    raise ValidationError("transaction.timestamp needs an offset and matching date")
+            country = item.get("country")
+            if country is not None and (
+                not isinstance(country, str) or not re.fullmatch(r"[A-Z]{2}", country)
+            ):
+                raise ValidationError("transaction.country must be a two-letter uppercase code")
+            channel = item.get("channel")
+            if channel is not None and channel not in ("card", "bank_transfer", "cash", "other"):
+                raise ValidationError(
+                    "transaction.channel must be card, bank_transfer, cash or other"
+                )
             transactions.append(
                 Transaction(
                     tx_id,
@@ -203,6 +230,9 @@ class ClientData:
                     kind,
                     text_value(item.get("category"), "transaction.category", limit=80),
                     text_value(item.get("counterparty"), "transaction.counterparty", limit=120),
+                    timestamp,
+                    country,
+                    channel,
                 )
             )
         return cls(
@@ -216,6 +246,7 @@ class ClientData:
             decimal_value(raw.get("liabilities"), "liabilities"),
             tuple(holdings),
             tuple(sorted(transactions, key=lambda tx: (tx.date, tx.id))),
+            home_country,
         )
 
 
@@ -281,6 +312,19 @@ class Session:
     warnings: list[str] = field(default_factory=list)
     events: list[dict[str, Any]] = field(default_factory=list)
     completed: set[str] = field(default_factory=set)
+    raw_findings: list[Finding] = field(default_factory=list)
+    suppressed_findings: list[dict[str, Any]] = field(default_factory=list)
+    feedback: list[dict[str, Any]] = field(default_factory=list)
+    feedback_events: list[dict[str, Any]] = field(default_factory=list)
+    skipped_checks: list[dict[str, Any]] = field(default_factory=list)
+    failed_checks: list[dict[str, Any]] = field(default_factory=list)
+    executed_checks: list[str] = field(default_factory=list)
+    tool_calls: list[dict[str, Any]] = field(default_factory=list)
+    narrative: dict[str, Any] = field(default_factory=dict)
+    data_quality: dict[str, Any] = field(default_factory=dict)
+    profile_source: str = "unavailable"
+    recurring_ids: list[str] = field(default_factory=list)
+    detector_signals: list[Finding] = field(default_factory=list)
 
     def require_data(self) -> ClientData:
         if self.data is None:

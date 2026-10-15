@@ -1,0 +1,23 @@
+{
+  "balanced_demo": {
+    "client_id": "balanced_demo",
+    "risk_tolerance": "moderate",
+    "investment_horizon_years": 8,
+    "kyc_status": "verified",
+    "updated_at": "2026-08-15"
+  },
+  "activity_demo": {
+    "client_id": "activity_demo",
+    "risk_tolerance": "moderate",
+    "investment_horizon_years": 8,
+    "kyc_status": "verified",
+    "updated_at": "2026-08-15"
+  },
+  "import_demo": {
+    "client_id": "import_demo",
+    "risk_tolerance": "moderate",
+    "investment_horizon_years": 8,
+    "kyc_status": "verified",
+    "updated_at": "2026-08-15"
+  }
+}

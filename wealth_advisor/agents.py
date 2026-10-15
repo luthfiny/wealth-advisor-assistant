@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import Protocol
 
+from .config import Settings
 from .domain import Action, Session
+from .feedback import apply_feedback, fingerprint
 from .observability import emit
+from .priority import RANK
 from .tools import ToolClient, ToolError
 
 
@@ -13,6 +17,7 @@ class Agent(Protocol):
     name: str
     requires: frozenset[str]
     provides: frozenset[str]
+    allowed_tools: frozenset[str]
 
     def run(self, session: Session, tools: ToolClient) -> None: ...
 
@@ -21,11 +26,29 @@ class DataFetcherAgent:
     name = "data_fetcher"
     requires = frozenset()
     provides = frozenset({"prepared_data"})
+    allowed_tools = frozenset(
+        {
+            "financial.prepare",
+            "crm.profile",
+            "memory.history",
+            "memory.feedback",
+            "memory.crm.read",
+            "memory.crm.save",
+        }
+    )
+
+    def __init__(self, settings=None):
+        self.settings = settings or Settings()
 
     def run(self, session: Session, tools: ToolClient) -> None:
-        session.data = tools.call(
-            "financial.load", {"path": session.input_path}, run_id=session.run_id
+        prepared = tools.call(
+            "financial.prepare", {"path": session.input_path}, run_id=session.run_id
         )
+        session.data, session.data_quality = prepared.data, prepared.quality
+        if session.data_quality["issues"]:
+            session.warnings.append(
+                "Input records were repaired or dropped; inspect data_quality before review."
+            )
         data = session.require_data()
         try:
             session.profile = tools.call(
@@ -36,6 +59,15 @@ class DataFetcherAgent:
                 },
                 run_id=session.run_id,
             )
+            session.profile_source = "fresh"
+            try:
+                tools.call(
+                    "memory.crm.save",
+                    {"profile": session.profile, "as_of": data.as_of},
+                    run_id=session.run_id,
+                )
+            except ToolError:
+                session.warnings.append("CRM snapshot could not be cached.")
         except ToolError as exc:
             session.warnings.append(
                 f"CRM context unavailable ({exc.code}); suitability is blocked."
@@ -47,6 +79,36 @@ class DataFetcherAgent:
                 decision="continue_without_crm",
                 code=exc.code,
             )
+            if exc.kind != "not_found":
+                try:
+                    cached = tools.call(
+                        "memory.crm.read",
+                        {
+                            "client_id": data.client_id,
+                            "as_of": data.as_of,
+                            "max_age_days": self.settings.crm.cache_max_age_days,
+                            "profile_max_age_days": self.settings.analysis.profile_max_age_days,
+                        },
+                        run_id=session.run_id,
+                    )
+                    if cached:
+                        session.profile = cached["profile"]
+                        session.profile_source = "cache"
+                        session.warnings.append(
+                            "A temporally valid cached CRM snapshot was used; "
+                            "portfolio discussion remains blocked."
+                        )
+                        emit(
+                            "agent.fallback",
+                            run_id=session.run_id,
+                            agent=self.name,
+                            decision="use_cached_crm",
+                            cache_age_days=cached["age_days"],
+                        )
+                except ToolError:
+                    session.warnings.append(
+                        "CRM cache unavailable; continuing without suitability context."
+                    )
         try:
             session.history = tools.call(
                 "memory.history",
@@ -68,16 +130,30 @@ class DataFetcherAgent:
                 decision="continue_without_history",
                 code=exc.code,
             )
+        try:
+            session.feedback = tools.call(
+                "memory.feedback",
+                {"client_id": data.client_id, "currency": data.currency, "as_of": data.as_of},
+                run_id=session.run_id,
+            )
+        except ToolError:
+            session.warnings.append(
+                "Reviewer feedback unavailable; all current findings remain active."
+            )
 
 
 class AnalyzerAgent:
     name = "analyzer"
     requires = frozenset({"prepared_data"})
     provides = frozenset({"analysis"})
+    allowed_tools = frozenset({"analytics.prepare", "analytics.catalog", "analytics.scan"})
+
+    def __init__(self, settings=None):
+        self.settings = settings or Settings()
 
     def run(self, session: Session, tools: ToolClient) -> None:
-        session.metrics, session.findings = tools.call(
-            "analytics.scan",
+        context = tools.call(
+            "analytics.prepare",
             {
                 "data": session.require_data(),
                 "profile": session.profile,
@@ -85,6 +161,48 @@ class AnalyzerAgent:
             },
             run_id=session.run_id,
         )
+        catalog = tools.call("analytics.catalog", {}, run_id=session.run_id)
+        selected = []
+        for check in catalog:
+            if (
+                self.settings.enabled_checks is not None
+                and check["name"] not in self.settings.enabled_checks
+            ):
+                session.skipped_checks.append(
+                    {"check": check["name"], "reason": "disabled_by_configuration"}
+                )
+            elif set(check["needs"]) - context.available:
+                session.skipped_checks.append(
+                    {
+                        "check": check["name"],
+                        "reason": "missing_inputs: "
+                        + ", ".join(sorted(set(check["needs"]) - context.available)),
+                    }
+                )
+            else:
+                selected.append(check["name"])
+        result = tools.call(
+            "analytics.scan", {"context": context, "selected": selected}, run_id=session.run_id
+        )
+        session.metrics = result.metrics
+        session.raw_findings, session.detector_signals = result.findings, result.raw_findings
+        session.executed_checks, session.failed_checks = (
+            result.executed_checks,
+            result.failed_checks,
+        )
+        session.findings, session.suppressed_findings, session.feedback_events = apply_feedback(
+            result.findings,
+            session.feedback,
+            fingerprint(asdict(self.settings.analysis)),
+            session.require_data().as_of,
+        )
+        session.findings.sort(key=lambda f: (RANK[f.severity], f.id))
+        seen = {fid for h in session.history for fid in h.get("finding_ids", [])}
+        session.recurring_ids = sorted(f.id for f in session.raw_findings if f.id in seen)
+        if result.failed_checks:
+            session.warnings.append(
+                "Some detectors failed; inspect failed_checks and validate coverage manually."
+            )
         emit(
             "agent.decision",
             run_id=session.run_id,
@@ -95,6 +213,21 @@ class AnalyzerAgent:
 
 
 _ACTIONS = {
+    "NEW_COUNTERPARTY": (
+        "Confirm the new counterparty and the purpose of the payment with the client."
+    ),
+    "DUPLICATE_CHARGE": (
+        "Reconcile the equal charges against receipts before requesting a correction."
+    ),
+    "TRANSACTION_VELOCITY": "Confirm whether the burst of outflows reflects planned activity.",
+    "ODD_HOURS": "Verify the recorded timezone and confirm the overnight payment with the client.",
+    "NEW_COUNTRY": "Confirm the new-country activity and verify the transaction records.",
+    "STRUCTURING_PATTERN": (
+        "Review the related cash movements and supporting records with the client."
+    ),
+    "INCOME_DROP": (
+        "Confirm income receipt timing and review whether the monthly budget needs updating."
+    ),
     "LOW_LIQUIDITY": (
         "Confirm near-term cash needs and discuss a staged reserve plan with the client."
     ),
@@ -132,12 +265,26 @@ class AdvisorAgent:
     name = "advisor"
     requires = frozenset({"analysis"})
     provides = frozenset({"draft_actions"})
+    allowed_tools = frozenset({"narrative.template", "narrative.llm"})
+
+    def __init__(self, settings=None):
+        self.settings = settings or Settings()
 
     def run(self, session: Session, tools: ToolClient) -> None:
         blockers = {"CRM_UNAVAILABLE", "STALE_PROFILE", "KYC_REVIEW"}
-        suitability_blocked = any(f.code in blockers for f in session.findings)
+        suitability_blocked = (
+            session.profile_source != "fresh"
+            or bool(session.failed_checks)
+            or bool(session.data_quality.get("issues"))
+            or any(f.code in blockers for f in session.raw_findings)
+            or not {"crm_context", "suitability", "concentration", "liquidity"}
+            <= set(session.executed_checks)
+        )
         for finding in session.findings:
-            instruction = _ACTIONS[finding.code]
+            instruction = _ACTIONS.get(
+                finding.code,
+                "Review the supporting evidence manually before making a recommendation.",
+            )
             if suitability_blocked and finding.code in {
                 "RISK_PROFILE_MISMATCH",
                 "SINGLE_ASSET_CONCENTRATION",
@@ -148,6 +295,33 @@ class AdvisorAgent:
                 )
             session.actions.append(
                 Action("A-" + finding.id[2:], (finding.id,), finding.severity, instruction)
+            )
+        brief = {
+            "metrics": session.metrics,
+            "findings": [asdict(f) for f in session.findings],
+            "actions": [asdict(a) for a in session.actions],
+            "warnings": session.warnings,
+            "status": "pending_review",
+        }
+        if self.settings.narrative.enabled:
+            try:
+                session.narrative = tools.call(
+                    "narrative.llm", {"brief": brief}, run_id=session.run_id
+                )
+            except ToolError as exc:
+                session.warnings.append(
+                    f"Optional narrative unavailable ({exc.code}); verified template used."
+                )
+                emit(
+                    "agent.fallback",
+                    run_id=session.run_id,
+                    agent=self.name,
+                    decision="use_template_narrative",
+                    code=exc.code,
+                )
+        if not session.narrative:
+            session.narrative = tools.call(
+                "narrative.template", {"brief": brief}, run_id=session.run_id
             )
         emit(
             "agent.decision",
